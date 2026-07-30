@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pococha ランクボーダー早見表</title>
+<style>
+  :root {
+    --bg:#f6f7f9; --card:#fff; --fg:#1a1d21; --sub:#697586;
+    --line:#e3e8ef; --accent:#5b8def; --accent-bg:#eaf1ff; --zebra:#fafbfc;
+    --th:#f3f5f8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0f1216; --card:#161b22; --fg:#e6edf3; --sub:#9aa4b2;
+      --line:#2a313c; --accent:#5b8def; --accent-bg:#1b2740; --zebra:#1a2028;
+      --th:#1c232c;
+    }
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    line-height:1.5; padding:24px 14px 60px;
+  }
+  .wrap { max-width:760px; margin:0 auto; }
+  h1 { font-size:20px; margin:0 0 4px; }
+  .meta { color:var(--sub); font-size:12.5px; margin:0 0 18px; }
+  .tabs { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+  .tab {
+    border:1px solid var(--line); background:var(--card); color:var(--fg);
+    padding:8px 16px; border-radius:999px; font-size:14px; cursor:pointer;
+    font-weight:600;
+  }
+  .tab.active { background:var(--accent-bg); border-color:var(--accent); color:var(--accent); }
+  .panel { display:none; }
+  .panel.active { display:block; }
+  .asof { font-size:13px; color:var(--sub); margin:2px 0 10px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 12px; }
+  table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
+  th,td { padding:7px 8px; text-align:right; font-size:13.5px; border-bottom:1px solid var(--line); }
+  thead th { background:var(--th); color:var(--sub); font-weight:600; position:sticky; top:0; }
+  th.rk { text-align:left; }
+  td { white-space:nowrap; }
+  tbody th.rk { font-weight:700; }
+  tbody tr:nth-child(even) { background:var(--zebra); }
+  .empty { color:var(--sub); padding:20px; text-align:center; }
+  footer { color:var(--sub); font-size:11.5px; margin-top:20px; text-align:center; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Pococha ランクボーダー早見表</h1>
+    <p class="meta">数値は各締め時間の到達ボーダー（メーター）。最終更新：2026/07/30 18:10</p>
+    <div class="tabs"><button class="tab active" data-t="22">22時締め</button><button class="tab" data-t="24">24時締め</button><button class="tab" data-t="13">13時締め</button></div>
+    <div class="card"><section class="panel active" data-t="22"><div class="asof">対象日：<strong>7月29日（水）</strong></div><table><thead><tr><th class="rk">ランク</th><th>Top</th><th>上位</th><th>通常</th><th>下位</th></tr></thead><tbody><tr><th class="rk">S6</th><td>3,576,388</td><td>1,875,457</td><td>510,001</td><td>488,897</td></tr><tr><th class="rk">S5</th><td>2,015,343</td><td>1,308,840</td><td>367,043</td><td>330,108</td></tr><tr><th class="rk">S4</th><td>1,545,266</td><td>1,015,254</td><td>461,415</td><td>394,512</td></tr><tr><th class="rk">S3</th><td>1,090,235</td><td>949,333</td><td>315,408</td><td>314,822</td></tr><tr><th class="rk">S2</th><td>1,092,904</td><td>870,197</td><td>308,933</td><td>236,285</td></tr><tr><th class="rk">S1</th><td>872,139</td><td>501,256</td><td>248,008</td><td>240,454</td></tr><tr><th class="rk">A3</th><td>781,246</td><td>582,310</td><td>217,762</td><td>210,015</td></tr><tr><th class="rk">A2</th><td>630,281</td><td>491,446</td><td>174,721</td><td>173,002</td></tr><tr><th class="rk">A1</th><td>541,808</td><td>420,050</td><td>165,067</td><td>141,490</td></tr><tr><th class="rk">B3</th><td>505,533</td><td>380,109</td><td>122,324</td><td>117,461</td></tr><tr><th class="rk">B2</th><td>449,968</td><td>257,226</td><td>115,742</td><td>110,321</td></tr><tr><th class="rk">B1</th><td>344,985</td><td>256,466</td><td>97,760</td><td>95,836</td></tr><tr><th class="rk">C3</th><td>236,177</td><td>200,838</td><td>57,348</td><td>56,362</td></tr><tr><th class="rk">C2</th><td>196,486</td><td>132,785</td><td>44,093</td><td>42,607</td></tr><tr><th class="rk">C1</th><td>115,604</td><td>84,639</td><td>28,040</td><td>27,727</td></tr><tr><th class="rk">D3</th><td>61,364</td><td>33,786</td><td>10,075</td><td>9,863</td></tr><tr><th class="rk">D2</th><td>23,823</td><td>14,042</td><td>5,615</td><td>5,609</td></tr><tr><th class="rk">D1</th><td>11,273</td><td>6,531</td><td>1,778</td><td>1,777</td></tr><tr><th class="rk">E1</th><td>2,245</td><td>959</td><td>234</td><td>232</td></tr></tbody></table></section><section class="panel" data-t="24"><div class="asof">対象日：<strong>7月29日（水）</strong></div><table><thead><tr><th class="rk">ランク</th><th>Top</th><th>上位</th><th>通常</th><th>下位</th></tr></thead><tbody><tr><th class="rk">S6</th><td>3,786,157</td><td>1,588,507</td><td>624,769</td><td>470,969</td></tr><tr><th class="rk">S5</th><td>1,903,011</td><td>1,082,496</td><td>394,819</td><td>150,471</td></tr><tr><th class="rk">S4</th><td>1,287,284</td><td>1,057,718</td><td>575,343</td><td>563,771</td></tr><tr><th class="rk">S3</th><td>1,306,704</td><td>876,055</td><td>504,491</td><td>502,740</td></tr><tr><th class="rk">S2</th><td>801,860</td><td>767,539</td><td>456,468</td><td>454,085</td></tr><tr><th class="rk">S1</th><td>908,617</td><td>682,964</td><td>289,506</td><td>282,097</td></tr><tr><th class="rk">A3</th><td>813,923</td><td>606,666</td><td>341,256</td><td>325,522</td></tr><tr><th class="rk">A2</th><td>719,230</td><td>530,370</td><td>275,795</td><td>274,976</td></tr><tr><th class="rk">A1</th><td>564,469</td><td>414,891</td><td>202,491</td><td>200,447</td></tr><tr><th class="rk">B3</th><td>487,066</td><td>396,008</td><td>205,099</td><td>38,281</td></tr><tr><th class="rk">B2</th><td>482,472</td><td>348,541</td><td>173,908</td><td>163,219</td></tr><tr><th class="rk">B1</th><td>359,415</td><td>267,193</td><td>143,914</td><td>137,123</td></tr><tr><th class="rk">C3</th><td>248,482</td><td>140,144</td><td>65,289</td><td>44,188</td></tr><tr><th class="rk">C2</th><td>182,107</td><td>138,339</td><td>63,435</td><td>62,502</td></tr><tr><th class="rk">C1</th><td>125,237</td><td>88,179</td><td>40,282</td><td>34,526</td></tr><tr><th class="rk">D3</th><td>78,048</td><td>50,564</td><td>15,150</td><td>15,079</td></tr><tr><th class="rk">D2</th><td>35,436</td><td>21,988</td><td>7,086</td><td>7,076</td></tr><tr><th class="rk">D1</th><td>15,949</td><td>9,804</td><td>2,743</td><td>2,702</td></tr><tr><th class="rk">E1</th><td>4,400</td><td>1,424</td><td>232</td><td>232</td></tr></tbody></table></section><section class="panel" data-t="13"><div class="asof">対象日：<strong>7月28日（火）</strong></div><table><thead><tr><th class="rk">ランク</th><th>Top</th><th>上位</th><th>通常</th><th>下位</th></tr></thead><tbody><tr><th class="rk">S6</th><td>1,806,548</td><td>984,521</td><td>506,569</td><td>497,434</td></tr><tr><th class="rk">S5</th><td>1,806,548</td><td>858,318</td><td>436,011</td><td>412,800</td></tr><tr><th class="rk">S4</th><td>1,530,478</td><td>723,556</td><td>358,975</td><td>347,590</td></tr><tr><th class="rk">S3</th><td>984,521</td><td>649,287</td><td>324,569</td><td>316,556</td></tr><tr><th class="rk">S2</th><td>947,473</td><td>500,382</td><td>287,172</td><td>265,821</td></tr><tr><th class="rk">S1</th><td>672,630</td><td>423,384</td><td>243,840</td><td>116,959</td></tr><tr><th class="rk">A3</th><td>580,762</td><td>329,210</td><td>242,498</td><td>239,008</td></tr><tr><th class="rk">A2</th><td>580,762</td><td>329,210</td><td>232,666</td><td>218,328</td></tr><tr><th class="rk">A1</th><td>536,623</td><td>312,067</td><td>218,328</td><td>104,375</td></tr><tr><th class="rk">B3</th><td>438,138</td><td>376,472</td><td>194,981</td><td>194,901</td></tr><tr><th class="rk">B2</th><td>419,900</td><td>302,411</td><td>165,328</td><td>157,647</td></tr><tr><th class="rk">B1</th><td>341,684</td><td>254,012</td><td>136,814</td><td>91,519</td></tr><tr><th class="rk">C3</th><td>239,720</td><td>198,916</td><td>86,240</td><td>61,050</td></tr><tr><th class="rk">C2</th><td>196,368</td><td>107,989</td><td>60,305</td><td>42,899</td></tr><tr><th class="rk">C1</th><td>133,229</td><td>83,829</td><td>38,295</td><td>37,410</td></tr><tr><th class="rk">D3</th><td>81,877</td><td>54,183</td><td>13,499</td><td>12,628</td></tr><tr><th class="rk">D2</th><td>30,292</td><td>18,201</td><td>5,710</td><td>5,347</td></tr><tr><th class="rk">D1</th><td>13,297</td><td>8,467</td><td>2,436</td><td>2,421</td></tr><tr><th class="rk">E1</th><td>4,934</td><td>2,057</td><td>264</td><td>263</td></tr></tbody></table></section></div>
+    <footer>データ出典：UPSTAR（upstar.livestar.tokyo）／毎日10:00 自動更新</footer>
+  </div>
+<script>
+  document.querySelectorAll('.tab').forEach(function(b){
+    b.addEventListener('click', function(){
+      var t=b.dataset.t;
+      document.querySelectorAll('.tab').forEach(function(x){x.classList.toggle('active',x.dataset.t===t);});
+      document.querySelectorAll('.panel').forEach(function(x){x.classList.toggle('active',x.dataset.t===t);});
+    });
+  });
+</script>
+</body>
+</html>
