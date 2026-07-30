@@ -123,6 +123,8 @@ TEMPLATE = """<!doctype html>
     line-height:1.5; padding:24px 14px 60px;
   }}
   .wrap {{ max-width:760px; margin:0 auto; }}
+  .brandbar {{ display:flex; justify-content:center; margin:2px 0 18px; }}
+  .brandbar img {{ height:34px; width:auto; }}
   h1 {{ font-size:20px; margin:0 0 4px; }}
   .meta {{ color:var(--sub); font-size:12.5px; margin:0 0 18px; }}
   .tabs {{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }}
@@ -149,11 +151,12 @@ TEMPLATE = """<!doctype html>
 </head>
 <body>
   <div class="wrap">
+    <div class="brandbar"><img src="assets/dcl_logo.png" alt="DeNA Creator Links"></div>
     <h1>Pococha ランクボーダー早見表</h1>
     <p class="meta">数値は各締め時間の到達ボーダー（メーター）。最終更新：{updated}</p>
     <div class="tabs">{tabs}</div>
     <div class="card">{panels}</div>
-    <footer>データ出典：UPSTAR（upstar.livestar.tokyo）／毎日10:00 自動更新</footer>
+    <footer>DeNA Creator Links — Pococha Rank Boarder／毎日10:00 自動更新</footer>
   </div>
 <script>
   document.querySelectorAll('.tab').forEach(function(b){{
