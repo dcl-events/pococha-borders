@@ -21,11 +21,11 @@ RANK_ORDER = ["S6", "S5", "S4", "S3", "S2", "S1",
               "A3", "A2", "A1", "B3", "B2", "B1",
               "C3", "C2", "C1", "D3", "D2", "D1", "E1"]
 
+# UPSTAR のランク別ボーダー表と同じ3列（昇格に必要なメーター）
 COLS = [
-    ("borderTop", "Top"),
-    ("borderUpper", "上位"),
-    ("borderNormal", "通常"),
-    ("borderLower", "下位"),
+    ("borderTop", "+2"),
+    ("borderUpper", "+1"),
+    ("borderNormal", "±0"),
 ]
 
 
