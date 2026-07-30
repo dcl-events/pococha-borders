@@ -86,6 +86,8 @@ TEMPLATE = r"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="assets/dcl_mark.png">
+<link rel="apple-touch-icon" href="assets/dcl_mark.png">
 <title>Pococha ランクボーダー早見表</title>
 <style>
   :root {
