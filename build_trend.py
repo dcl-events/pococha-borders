@@ -42,7 +42,13 @@ def build_series():
     fixed = ['S6','S5','S4','S3','S2','S1','A3','A2','A1','B3','B2','B1','C3','C2','C1','D3','D2','D1','E1']
     ranks = [r for r in fixed if r in ranks_order] + [r for r in ranks_order if r not in fixed]
     cts = list(out.keys())
-    return out, ranks, cts
+    updated = raw.get("updatedAt", "")
+    try:
+        import datetime
+        updated = datetime.datetime.fromisoformat(updated).strftime("%Y/%m/%d %H:%M")
+    except Exception:
+        pass
+    return out, ranks, cts, updated
 
 
 HTML = """<!doctype html>
@@ -52,18 +58,21 @@ HTML = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pococha ボーダー推移</title>
 <style>
-  :root{ --bg:#f6f7fb; --card:#fff; --border:#e5e8ee; --text:#1a1a1a; --sub:#8a92a0;
-         --accent:#5b6ef5; --accent-soft:#c7cef3; --track:#eef1f6; --hot:#e8544f; }
+  :root{ --bg:#f6f7f9; --card:#fff; --border:#e3e8ef; --text:#1a1d21; --sub:#697586;
+         --accent:#5b8def; --accent-soft:#c9dcff; --track:#f3f5f8; --hot:#e8544f; }
   @media (prefers-color-scheme:dark){
-    :root{ --bg:#12141a; --card:#1c2029; --border:#2c3340; --text:#e8eaf0; --sub:#8b93a3;
-           --accent:#7f8cff; --accent-soft:#3a4470; --track:#242a35; }
+    :root{ --bg:#0f1216; --card:#161b22; --border:#2a313c; --text:#e6edf3; --sub:#9aa4b2;
+           --accent:#5b8def; --accent-soft:#2a3d5f; --track:#1c232c; }
   }
   *{ box-sizing:border-box; }
-  body{ margin:0; padding:20px; background:var(--bg); color:var(--text);
-        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans",sans-serif; }
+  body{ margin:0; padding:24px 14px 40px; background:var(--bg); color:var(--text);
+        font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif; }
   .app{ max-width:820px; margin:0 auto; }
-  h1{ font-size:19px; margin:0 0 4px; }
-  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 16px; }
+  .brandbar{ display:flex; justify-content:center; margin:2px 0 18px; }
+  .brandbar img{ height:34px; width:auto; }
+  h1{ font-size:19px; margin:0 0 4px; text-align:center; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 18px; text-align:center; }
+  footer{ color:var(--sub); font-size:11.5px; margin-top:22px; text-align:center; }
   .controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
   select{ font-size:13px; font-weight:600; padding:7px 10px; border-radius:10px;
           border:1px solid var(--border); background:var(--card); color:var(--text); }
@@ -99,8 +108,10 @@ HTML = """<!doctype html>
   .rlabels b{ color:var(--accent); }
   .note{ font-size:12px; color:var(--sub); margin-top:12px; line-height:1.55; }
   .note b{ color:var(--accent); }
-  .bars{ display:flex; align-items:flex-end; gap:7px; height:96px; }
+  .bars{ display:flex; align-items:flex-end; gap:7px; height:130px; }
   .bar{ flex:1; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; }
+  .bar em{ font-size:10px; font-style:normal; font-weight:700; color:var(--sub); margin-bottom:4px; white-space:nowrap; }
+  .bar.hot em{ color:var(--accent); }
   .bar i{ width:100%; background:var(--accent-soft); border-radius:5px 5px 0 0; }
   .bar.hot i{ background:var(--accent); }
   .bar b{ font-size:11px; font-weight:600; color:var(--sub); margin-top:5px; }
@@ -109,8 +120,14 @@ HTML = """<!doctype html>
 </head>
 <body>
 <div class="app">
+  <div class="brandbar">
+    <picture>
+      <source srcset="assets/dcl_logo_dark.png" media="(prefers-color-scheme: dark)">
+      <img src="assets/dcl_logo.png" alt="DeNA Creator Links">
+    </picture>
+  </div>
   <h1>Pococha ボーダー推移</h1>
-  <p class="lead">過去のボーダー実績から「相場」を読むための早見ダッシュボード（個人データは使いません）</p>
+  <p class="lead">過去のボーダー実績から「相場」を読む早見表（個人データは使いません）。最終更新：__UPDATED__</p>
 
   <div class="controls">
     <select id="rank"></select>
@@ -143,7 +160,7 @@ HTML = """<!doctype html>
       <div class="note" id="wNote"></div>
     </div>
   </div>
-  <div class="foot" id="foot"></div>
+  <footer>DeNA Creator Links — Pocochaボーダー推移／毎日10:00 自動更新</footer>
 </div>
 
 <script>
@@ -173,7 +190,8 @@ function render(){
 
   const all = series();
   const last14 = all.slice(-14);
-  const vals = all.map(p=>p.v);
+  const recent = all.slice(-30);            // レンジ・曜日別は直近30日で相場を今に寄せる
+  const vals = recent.map(p=>p.v);
   const med = median(vals), mn = Math.min(...vals), mx = Math.max(...vals);
 
   document.getElementById("chartTtl").textContent = `${state.rank}  ${TIER_LABEL[state.tier]} ボーダー 推移`;
@@ -192,20 +210,20 @@ function render(){
   band.style.left = pct(q1)+"%"; band.style.right = (100-pct(q3))+"%";
   document.getElementById("medMark").style.left = pct(med)+"%";
   document.getElementById("rangeNote").innerHTML =
-    `過去${vals.length}日の実績は <b>${fmtMan(mn)}〜${fmtMan(mx)}</b>。<br>` +
+    `直近${vals.length}日の実績は <b>${fmtMan(mn)}〜${fmtMan(mx)}</b>。<br>` +
     `半分の日は <b>${fmtMan(q1)}〜${fmtMan(q3)}</b> に収まる。`;
 
-  // weekday
+  // weekday（直近30日）
   const wsum = Array.from({length:7},()=>[]);
-  all.forEach(p=>{ const wd=(new Date(p.iso).getDay()+6)%7; wsum[wd].push(p.v); });
+  recent.forEach(p=>{ const wd=(new Date(p.iso).getDay()+6)%7; wsum[wd].push(p.v); });
   const wavg = wsum.map(a=> a.length? a.reduce((x,y)=>x+y,0)/a.length : null);
   const wvalid = wavg.filter(v=>v!=null);
   const wmax = Math.max(...wvalid), wmin = Math.min(...wvalid);
   const bars = wavg.map((v,i)=>{
-    if(v==null) return `<div class="bar"><i style="height:0"></i><b>${WD[i]}</b></div>`;
+    if(v==null) return `<div class="bar"><em>-</em><i style="height:0"></i><b>${WD[i]}</b></div>`;
     const h = 30 + (v-wmin)/((wmax-wmin)||1)*70;
     const hot = v===wmax ? " hot":"";
-    return `<div class="bar${hot}" title="${WD[i]} ${fmtMan(v)}"><i style="height:${h}%"></i><b>${WD[i]}</b></div>`;
+    return `<div class="bar${hot}"><em>${fmtMan(v)}</em><i style="height:${h}%"></i><b>${WD[i]}</b></div>`;
   }).join("");
   document.getElementById("wbars").innerHTML = bars;
   const we = median([wavg[5],wavg[6]].filter(v=>v!=null));
@@ -215,9 +233,6 @@ function render(){
   document.getElementById("wNote").innerHTML = flat
     ? `→ 曜日差は <b>ほぼ無し</b>（週末${ratio.toFixed(2)}倍）。いつ走っても条件は近い。`
     : `→ 週末は平日の <b>${ratio.toFixed(2)}倍</b>。狙い目を意識。`;
-
-  document.getElementById("foot").textContent =
-    `全${all.length}日ぶんの実績 ／ 最終日 ${all.length? all[all.length-1].d : "-"}`;
 }
 
 function drawChart(pts, med){
@@ -265,11 +280,12 @@ render();
 
 
 def main():
-    data, ranks, cts = build_series()
+    data, ranks, cts, updated = build_series()
     html = (HTML
             .replace("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":")))
             .replace("__RANKS__", json.dumps(ranks, ensure_ascii=False))
-            .replace("__CTS__", json.dumps(cts, ensure_ascii=False)))
+            .replace("__CTS__", json.dumps(cts, ensure_ascii=False))
+            .replace("__UPDATED__", updated or "-"))
     OUT.write_text(html, encoding="utf-8")
     print(f"wrote {OUT}  ({len(html)//1024} KB)")
 
