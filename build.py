@@ -111,8 +111,8 @@ TEMPLATE = r"""<!doctype html>
   .wrap { max-width:760px; margin:0 auto; }
   .brandbar { display:flex; justify-content:center; margin:2px 0 18px; }
   .brandbar img { height:34px; width:auto; }
-  h1 { font-size:20px; margin:0 0 4px; }
-  .meta { color:var(--sub); font-size:12.5px; margin:0 0 16px; }
+  h1 { font-size:20px; margin:0 0 4px; text-align:center; }
+  .meta { color:var(--sub); font-size:12.5px; margin:0 0 18px; text-align:center; }
 
   /* 日付セレクタ */
   .datebar { position:relative; margin-bottom:14px; }
