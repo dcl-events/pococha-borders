@@ -37,7 +37,17 @@
   .statnum{ font-size:22px; font-weight:800; color:var(--accent); }
   .statnum small{ font-size:13px; margin-left:1px; }
   .statlbl{ font-size:11px; color:var(--sub); }
-  svg.chart{ width:100%; height:210px; overflow:visible; display:block; }
+  .chartwrap{ position:relative; touch-action:pan-y; }
+  svg.chart{ width:100%; height:210px; overflow:visible; display:block; cursor:pointer; }
+  .daydot{ fill:var(--accent); opacity:.30; }
+  #guide{ stroke:var(--accent); stroke-width:1; opacity:0; pointer-events:none; }
+  #hoverdot{ fill:var(--accent); stroke:var(--card); stroke-width:2; opacity:0; pointer-events:none; }
+  .tip{ position:absolute; top:4px; transform:translateX(-50%); pointer-events:none; opacity:0;
+        transition:opacity .08s; background:var(--card); border:1px solid var(--border); border-radius:10px;
+        padding:5px 10px; box-shadow:0 4px 14px rgba(0,0,0,.14); white-space:nowrap; text-align:center; }
+  .tip .tipd{ display:block; font-size:11px; color:var(--sub); }
+  .tip .tipv{ display:block; font-size:14px; font-weight:800; color:var(--accent); }
+  .charthint{ font-size:11px; color:var(--sub); text-align:center; margin-top:10px; }
   .line{ fill:none; stroke:var(--accent); stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round; }
   .area{ fill:var(--accent); opacity:.07; }
   .medline{ stroke:var(--border); stroke-width:1; stroke-dasharray:4 4; }
@@ -89,7 +99,12 @@
       <div><div class="ttl" id="chartTtl"></div><div class="sub" id="chartSub"></div></div>
       <div class="stat"><div class="statnum" id="medBig"></div><div class="statlbl">期間中央値</div></div>
     </div>
-    <svg class="chart" id="chart" viewBox="0 0 720 210" preserveAspectRatio="none" role="img"></svg>
+    <div class="chartwrap">
+      <svg class="chart" id="chart" viewBox="0 0 720 210" preserveAspectRatio="none" role="img"
+           aria-label="日別ボーダー推移。なぞると数値、タップで早見表の該当日へ"></svg>
+      <div class="tip" id="tip" aria-hidden="true"></div>
+    </div>
+    <div class="charthint">日付をなぞると数値を表示 ／ タップで早見表のその日へ移動</div>
   </div>
 
   <div class="row">
@@ -119,7 +134,9 @@ const CTS = ["22", "24", "13"];
 const TIER_LABEL = {top:"+2", upper:"+1", normal:"±0"};
 const TIER_DESC = {top:"2ランクアップ", upper:"1ランクアップ", normal:"現ランク維持"};
 const WD = ["月","火","水","木","金","土","日"];
+const WDJP = ["日","月","火","水","木","金","土"];   // getDay() 0=日
 let state = { rank: RANKS.includes("S3") ? "S3" : RANKS[0], ct: CTS[0], tier: "normal" };
+let chartState = { pts: [] };
 
 const man = v => (v/1e4);
 const fmtMan = v => (v==null? "-" : (Math.round(v/1e3)/10).toFixed(1)+"万");
@@ -198,15 +215,21 @@ function drawChart(pts, med){
   const lx=x(pts.length-1), ly=y(last.v);
   const labels = pts.map((p,i)=> (i===0||i===pts.length-1||i===Math.floor(pts.length/2))
     ? `<text class="lbl" x="${x(i)}" y="${H-8}" text-anchor="${i===0?'start':i===pts.length-1?'end':'middle'}">${p.d}</text>`:"").join("");
+  const daydots = pts.map((p,i)=>`<circle class="daydot" cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="2.6"/>`).join("");
   const svg = `
     <polyline class="area" points="${area}"/>
     <line class="medline" x1="${padL}" y1="${ymed.toFixed(1)}" x2="${W-padR}" y2="${ymed.toFixed(1)}"/>
     <text class="lbl" x="${padL+4}" y="${(ymed-5).toFixed(1)}">中央値 ${fmtMan(med)}</text>
     <polyline class="line" points="${line}"/>
+    ${daydots}
+    <line id="guide" x1="0" y1="${padT}" x2="0" y2="${H-padB}"/>
     <circle class="dot" cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="5.5"/>
     <text class="dotlbl" x="${(lx-6).toFixed(1)}" y="${(ly-10).toFixed(1)}" text-anchor="end">${fmtMan(last.v)}</text>
+    <circle id="hoverdot" cx="0" cy="0" r="5"/>
     ${labels}`;
   document.getElementById("chart").innerHTML = svg;
+  // ポインタ操作用に各点のビューボックス座標＋データを保持
+  chartState = { pts: pts.map((p,i)=>({ x:x(i), y:y(p.v), iso:p.iso, d:p.d, v:p.v })) };
 }
 
 // build controls
@@ -221,6 +244,46 @@ const tabs=document.getElementById("tabs");
 });
 rankSel.onchange=e=>{ state.rank=e.target.value; render(); };
 ctSel.onchange=e=>{ state.ct=e.target.value; render(); };
+
+// ----- チャートの日別カーソル（なぞる=小窓表示 / タップ=早見表へ） -----
+const chartEl = document.getElementById("chart");
+const tip = document.getElementById("tip");
+function nearest(e){
+  if(!chartState.pts.length) return null;
+  const rect = chartEl.getBoundingClientRect();
+  const cx = (e.clientX - rect.left)/rect.width*720;
+  let bi=0, bd=1e9;
+  chartState.pts.forEach((p,i)=>{ const d=Math.abs(p.x-cx); if(d<bd){ bd=d; bi=i; } });
+  return { p: chartState.pts[bi], rect };
+}
+function showTip(e){
+  const n = nearest(e); if(!n) return;
+  const { p, rect } = n;
+  const g=document.getElementById("guide"), hd=document.getElementById("hoverdot");
+  if(g){ g.setAttribute("x1",p.x); g.setAttribute("x2",p.x); g.style.opacity=1; }
+  if(hd){ hd.setAttribute("cx",p.x); hd.setAttribute("cy",p.y); hd.style.opacity=1; }
+  const half=44;
+  let leftPx = (p.x/720)*rect.width;
+  leftPx = Math.max(half, Math.min(rect.width-half, leftPx));
+  tip.style.left = leftPx+"px";
+  const wd = WDJP[new Date(p.iso).getDay()];
+  tip.innerHTML = `<span class="tipd">${p.d}（${wd}）</span><span class="tipv">${fmtMan(p.v)}</span>`;
+  tip.style.opacity=1;
+}
+function hideTip(){
+  tip.style.opacity=0;
+  const g=document.getElementById("guide"), hd=document.getElementById("hoverdot");
+  if(g) g.style.opacity=0; if(hd) hd.style.opacity=0;
+}
+function jump(e){
+  const n = nearest(e); if(!n) return;
+  location.href = "../?date=" + n.p.iso + "&ct=" + state.ct;   // 早見表(index.html)の該当日へ
+}
+chartEl.addEventListener("pointermove", showTip);
+chartEl.addEventListener("pointerdown", showTip);
+chartEl.addEventListener("pointerleave", hideTip);
+chartEl.addEventListener("click", jump);
+
 render();
 </script>
 </body>

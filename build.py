@@ -297,6 +297,20 @@ TEMPLATE = r"""<!doctype html>
     });
   });
 
+  // ----- URL 深リンク（推移ページ等から ?date=YYYY-MM-DD&ct=22 で着地） -----
+  (function(){
+    try {
+      var sp = new URLSearchParams(location.search);
+      var t = sp.get("ct") || sp.get("time");
+      if (t && ["22","24","13"].indexOf(t) >= 0) {
+        state.time = t;
+        document.querySelectorAll('.tab').forEach(function(x){ x.classList.toggle('active', x.dataset.t===state.time); });
+      }
+      var d = sp.get("date");
+      if (d && d >= MIN && d <= MAX && hasAny(d)) { state.date = d; }
+    } catch (e) {}
+  })();
+
   // ----- 初期描画 -----
   updateDateLabel();
   renderTable();
