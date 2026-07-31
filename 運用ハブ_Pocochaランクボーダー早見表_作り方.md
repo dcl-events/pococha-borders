@@ -1,4 +1,4 @@
-> 📌 最終更新: 2026-07-30（新規作成：ランクボーダー早見表サイトの構築手順＝ゼロから作り直す/引き継ぐ用の技術ガイド）／オーナー: sukeaki.ito
+> 📌 最終更新: 2026-07-31（クラウド化：launchdからGitHub Actions cronへ載せ替え＝PC不要）／オーナー: sukeaki.ito
 
 # Pococha ランクボーダー早見表 ― 作り方（構築ガイド）
 
@@ -7,18 +7,20 @@ DeNA Creator Links の「Pococha ランクボーダー早見表」（→使い�
 ---
 
 ## 0. 全体像
-UPSTAR という外部サイトが公開している Pococha ランクボーダーのデータ（Firebase Cloud Function・認証不要）を毎朝取得し、静的HTMLに整形して GitHub Pages で公開する。ローカルの `launchd` が毎朝10:00に一連を実行する。
+UPSTAR という外部サイトが公開している Pococha ランクボーダーのデータ（Firebase Cloud Function・認証不要）を毎朝取得し、静的HTMLに整形して GitHub Pages で公開する。**取得〜生成〜デプロイはすべて GitHub Actions（クラウド）で完結＝PC不要**（2026-07-31にlaunchdから載せ替え）。
 
 ```
-launchd(毎朝10:00) → run.sh
-  ├ fetch.py   … UPSTAR API から当日ぶん取得 → data/history.json に蓄積
+GitHub Actions update.yml（cron 0 1 * * * = JST10:00）
+  ├ fetch.py   … UPSTAR API から取得 → data/history.json に蓄積
   ├ build.py   … history.json → docs/index.html（全日付データ埋め込み＋カレンダーUI）
-  └ git push   → GitHub Actions(deploy.yml) が docs/ を Pages へデプロイ
+  ├ 自動コミット（github-actions[bot]）
+  └ deploy-pages … docs/ を GitHub Pages へデプロイ
 ```
 
-- プロジェクト：`~/Claude/pococha-borders`（sukeaki の Mac）
+- プロジェクト（ソース）：`~/Claude/pococha-borders`（sukeaki の Mac。編集はここ→push）
 - リポジトリ：`github.com/dcl-events/pococha-borders`（Public）
 - 公開URL：`https://dcl-events.github.io/pococha-borders/`
+- ※旧構成：ローカル `launchd`＋`run.sh` で毎朝実行していたが、Mac稼働に依存するためクラウドへ移行。launchd は停止（unload）済・plistは残置。
 
 ---
 
@@ -62,8 +64,9 @@ Content-Type: application/json
 | `fetch.py` | 締め時間ごとに最新確定日を取得 → `data/history.json` に upsert（日次用） |
 | `backfill.py` | 過去日を一括取得（`START`日から今日まで）。一度きりの遡り用。ウェイト入り |
 | `build.py` | `history.json` を読み、全日付データをJSONで埋め込んだ `docs/index.html` を生成 |
-| `run.sh` | fetch → build → 変更あれば commit → push（launchd から実行） |
-| `.github/workflows/deploy.yml` | main への push で `docs/` を GitHub Pages にデプロイ |
+| `.github/workflows/update.yml` | **【本番】cron(JST10:00)で fetch→build→自動コミット→Pagesデプロイをクラウド実行。PC不要** |
+| `.github/workflows/deploy.yml` | main への手動 push で `docs/` を Pages にデプロイ（ローカル編集を反映する用） |
+| `run.sh` | fetch → build → commit → push（旧launchd用。現在は不使用） |
 | `docs/assets/dcl_logo.png` / `dcl_mark.png` | ヘッダーロゴ / ファビコン（ランキングサイトと共通） |
 | `~/Library/LaunchAgents/com.sukeakiito.pococha-borders.plist` | 毎朝10:00トリガー |
 
@@ -90,17 +93,17 @@ Content-Type: application/json
 
 ---
 
-## 4. launchd（毎朝10:00）
-`~/Library/LaunchAgents/com.sukeakiito.pococha-borders.plist` に `StartCalendarInterval {Hour:10, Minute:0}`。ProgramArguments で `run.sh` を叩く。
+## 4. スケジュール実行（クラウド・毎朝10:00）＝本番
+`.github/workflows/update.yml` の `on.schedule.cron: '0 1 * * *'`（UTC 01:00 = **JST 10:00**）。`workflow_dispatch` で手動実行も可。
 
-```
-launchctl load  ~/Library/LaunchAgents/com.sukeakiito.pococha-borders.plist
-launchctl list | grep pococha-borders            # 登録確認
-launchctl kickstart -k gui/$(id -u)/com.sukeakiito.pococha-borders  # 手動テスト
-```
-- ログ：`~/Claude/pococha-borders/logs/borders.{out,err}.log`
-- git push は osxkeychain の認証を使う（launchdのGUIセッションから通ることを実証済み）
-- リポジトリに `git config user.name/email` をローカル設定しておく（未設定だと commit が失敗する）
+- 権限は `contents: write`（history.json/docs を自動コミット）＋ `pages: write` ＋ `id-token: write`
+- ジョブ：checkout → setup-python → `python fetch.py && python build.py` → 変更あれば `github-actions[bot]` でコミット&push → upload-pages-artifact → deploy-pages
+- **Actions が push する時は GITHUB_TOKEN のため deploy.yml は連鎖しない**（ループ防止）。だから update.yml 自身の中で deploy まで済ませる
+- 実行ログ・手動起動：GitHub の Actions 画面 →「Daily update & deploy」
+- ランナーのタイムゾーンは UTC。`fetch.py` は「今日から遡って最初にデータがある日」を採るのでTZに関係なく正しく動く
+
+### 旧：launchd（現在は停止）
+以前は Mac の `launchd`（`com.sukeakiito.pococha-borders.plist`／`StartCalendarInterval Hour:10`）が `run.sh` を叩いていたが、**Mac稼働に依存する**ためクラウドへ移行し `launchctl unload` で停止済み（plistは残置。復活は `launchctl load`）。**クラウドと二重に動かすと push が競合する**ので、両方同時に有効化しないこと。
 
 ---
 

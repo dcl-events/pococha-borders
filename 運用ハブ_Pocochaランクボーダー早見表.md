@@ -1,4 +1,4 @@
-> 📌 最終更新: 2026-07-30（新規作成：Pocochaランクボーダー早見表サイトの公開・自動更新の仕組みと使い方）／オーナー: sukeaki.ito
+> 📌 最終更新: 2026-07-31（クラウド化：更新はGitHub Actionsで自動＝PC不要に変更）／オーナー: sukeaki.ito
 
 # Pococha ランクボーダー早見表（自動公開ツール）
 
@@ -30,14 +30,15 @@ DeNA Creator Links で使う、Pococha のランク別ボーダー（メータ�
 UPSTAR（`upstar.livestar.tokyo`）が公開している Firebase Cloud Function（認証不要の読み取り）。UPSTAR 側と数値は一致。
 
 ## 仕組み・保守（技術メモ）
-- 実体：**sukeaki の Mac** の `~/Claude/pococha-borders`（このツールは naoki の自動ジョブ群とは別で、sukeaki 端末で稼働）
-- 毎朝10:00に `launchd`（`com.sukeakiito.pococha-borders`）が `run.sh` を実行：
-  取得（`fetch.py`）→ HTML生成（`build.py`）→ GitHub へ push → GitHub Actions が Pages へ自動デプロイ
-- リポジトリ：`github.com/dcl-events/pococha-borders`（Public）
+- **更新はGitHubのクラウド（GitHub Actions）で完結＝PC不要**（2026-07-31クラウド化）。誰のMacも立ち上げなくても毎朝自動更新される
+- 毎朝 **JST 10:00**（cron `0 1 * * *` UTC）に GitHub Actions `update.yml` が実行：
+  取得（`fetch.py`）→ HTML生成（`build.py`）→ 自動コミット → Pages へ自動デプロイ
+- リポジトリ：`github.com/dcl-events/pococha-borders`（Public）／ソースは `~/Claude/pococha-borders`（sukeaki の Mac）
 - 全日付データをHTMLに埋め込む方式のため、日付切替はサーバ通信なしで一瞬
 - 過去にもっと遡って貯めたい時：`backfill.py` の `START` を変えて一度だけ実行（日次運用では使わない）
+- 今すぐ手動更新したい時：GitHub の Actions 画面 →「Daily update & deploy」→ Run workflow
 
 ## 注意 / 制約
-- 端末（sukeaki の Mac）が起動していない時間帯は launchd が動かず、次回起動時にまとめて実行される
+- GitHub Actions の cron は混雑時に数分〜十数分ずれることがある（日次更新なので実用上問題なし）
 - カレンダー下限は 2026-07-01 固定（それ以前を見たい場合は backfill で拡張が必要）
 - ライブ配信の「時間ダイヤ」「配信時間」等とは別物。ここで扱うのは**ランクボーダー（メーター）**のみ
