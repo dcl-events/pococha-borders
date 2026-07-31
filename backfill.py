@@ -13,7 +13,7 @@ import pathlib
 
 ENDPOINT = "https://us-central1-viibar-adc.cloudfunctions.net/fetchBorder"
 CLOSING_TIMES = [22, 24, 13]
-START = datetime.date(2026, 7, 1)
+START = datetime.date(2026, 6, 1)
 SLEEP = 0.6
 HERE = pathlib.Path(__file__).resolve().parent
 HISTORY = HERE / "data" / "history.json"
