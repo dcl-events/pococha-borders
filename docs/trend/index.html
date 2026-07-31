@@ -109,7 +109,7 @@
       <div class="stat"><div class="statnum" id="medBig"></div><div class="statlbl">期間中央値</div></div>
     </div>
     <div class="chartwrap">
-      <svg class="chart" id="chart" viewBox="0 0 720 210" preserveAspectRatio="none" role="img"
+      <svg class="chart" id="chart" viewBox="0 0 720 210" role="img"
            aria-label="日別ボーダー推移。なぞると数値、タップで早見表の該当日へ"></svg>
       <div class="tip" id="tip" aria-hidden="true">
         <span class="tipd"></span><span class="tipv"></span>
@@ -215,7 +215,11 @@ function render(){
 }
 
 function drawChart(pts, med){
-  const W=720,H=210, padL=8,padR=8,padT=18,padB=26;
+  const chart = document.getElementById("chart");
+  // 実表示幅に合わせて viewBox を組む＝横に引き伸ばさない → 文字が潰れない
+  const W = Math.max(280, Math.round(chart.clientWidth || 720));
+  const H=210, padL=8,padR=8,padT=18,padB=26;
+  chart.setAttribute("viewBox", "0 0 " + W + " " + H);
   const vals=pts.map(p=>p.v);
   let mn=Math.min(...vals), mx=Math.max(...vals);
   const span=(mx-mn)||1; mn-=span*0.15; mx+=span*0.15;
@@ -240,9 +244,9 @@ function drawChart(pts, med){
     <text class="dotlbl" x="${(lx-6).toFixed(1)}" y="${(ly-10).toFixed(1)}" text-anchor="end">${fmtMan(last.v)}</text>
     <circle id="hoverdot" cx="0" cy="0" r="5"/>
     ${labels}`;
-  document.getElementById("chart").innerHTML = svg;
+  chart.innerHTML = svg;
   // ポインタ操作用に各点のビューボックス座標＋データを保持
-  chartState = { pts: pts.map((p,i)=>({ x:x(i), y:y(p.v), iso:p.iso, d:p.d, v:p.v })) };
+  chartState = { W: W, pts: pts.map((p,i)=>({ x:x(i), y:y(p.v), iso:p.iso, d:p.d, v:p.v })) };
 }
 
 // build controls
@@ -264,7 +268,7 @@ const tip = document.getElementById("tip");
 function nearest(e){
   if(!chartState.pts.length) return null;
   const rect = chartEl.getBoundingClientRect();
-  const cx = (e.clientX - rect.left)/rect.width*720;
+  const cx = (e.clientX - rect.left)/rect.width*(chartState.W || 720);
   let bi=0, bd=1e9;
   chartState.pts.forEach((p,i)=>{ const d=Math.abs(p.x-cx); if(d<bd){ bd=d; bi=i; } });
   return { p: chartState.pts[bi], rect };
@@ -277,7 +281,7 @@ function showTip(e){
   if(g){ g.setAttribute("x1",p.x); g.setAttribute("x2",p.x); g.style.opacity=1; }
   if(hd){ hd.setAttribute("cx",p.x); hd.setAttribute("cy",p.y); hd.style.opacity=1; }
   const half=60;
-  let leftPx = (p.x/720)*rect.width;
+  let leftPx = (p.x/(chartState.W || 720))*rect.width;
   leftPx = Math.max(half, Math.min(rect.width-half, leftPx));
   tip.style.left = leftPx+"px";
   const wd = WDJP[new Date(p.iso).getDay()];
@@ -298,6 +302,9 @@ document.getElementById("tipBtn").addEventListener("click", function(ev){
 });
 chartEl.addEventListener("pointermove", showTip);
 chartEl.addEventListener("pointerdown", showTip);
+// 画面幅が変わったら実幅で描き直す（回転・リサイズ時に文字が潰れないように）
+let _rzTimer;
+window.addEventListener("resize", function(){ clearTimeout(_rzTimer); _rzTimer=setTimeout(function(){ hideTip(); render(); }, 150); });
 // 自動では消さない（PCで小窓のボタンへマウスを運ぶ途中で消えるのを防ぐ／スマホでも保持）。
 // チャート外をタップ／クリックしたら閉じる。
 document.addEventListener("pointerdown", function(e){
