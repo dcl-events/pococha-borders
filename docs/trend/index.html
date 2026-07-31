@@ -8,10 +8,10 @@
 <link rel="apple-touch-icon" href="../assets/dcl_mark.png">
 <style>
   :root{ --bg:#f6f7f9; --card:#fff; --border:#e3e8ef; --text:#1a1d21; --sub:#697586;
-         --accent:#5b8def; --accent-soft:#c9dcff; --track:#f3f5f8; --hot:#e8544f; }
+         --accent:#5b8def; --accent-soft:#c9dcff; --accent-bg:#eaf1ff; --track:#f3f5f8; --hot:#e8544f; }
   @media (prefers-color-scheme:dark){
     :root{ --bg:#0f1216; --card:#161b22; --border:#2a313c; --text:#e6edf3; --sub:#9aa4b2;
-           --accent:#5b8def; --accent-soft:#2a3d5f; --track:#1c232c; }
+           --accent:#5b8def; --accent-soft:#2a3d5f; --accent-bg:#1b2740; --track:#1c232c; }
   }
   *{ box-sizing:border-box; }
   body{ margin:0; padding:24px 14px 40px; background:var(--bg); color:var(--text);
@@ -29,6 +29,10 @@
   .tab{ font-size:13px; font-weight:700; padding:6px 16px; border-radius:999px; cursor:pointer;
         color:var(--sub); border:none; background:transparent; }
   .tab.active{ background:var(--accent); color:#fff; }
+  .backlink{ margin-left:auto; text-decoration:none; font-size:13px; font-weight:700;
+             padding:7px 14px; border-radius:999px; border:1px solid var(--accent); color:var(--accent);
+             display:inline-flex; align-items:center; gap:3px; }
+  .backlink:hover{ background:var(--accent-bg); }
   .card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; margin-bottom:12px; }
   .chead{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
   .ttl{ font-size:16px; font-weight:700; }
@@ -92,6 +96,7 @@
     <select id="rank"></select>
     <select id="ct"></select>
     <div class="tabs" id="tabs"></div>
+    <a id="backLink" class="backlink" href="../">← 早見表</a>
   </div>
 
   <div class="card">
@@ -152,6 +157,7 @@ function render(){
   // selectors
   document.getElementById("rank").value = state.rank;
   document.getElementById("ct").value = state.ct;
+  const bl = document.getElementById("backLink"); if(bl) bl.href = "../?ct=" + state.ct;
   [...document.querySelectorAll(".tab")].forEach(t=>t.classList.toggle("active", t.dataset.tier===state.tier));
 
   const all = series();
