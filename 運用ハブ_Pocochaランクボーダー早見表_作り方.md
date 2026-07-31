@@ -70,7 +70,7 @@ Content-Type: application/json
 | `.github/workflows/deploy.yml` | main への手動 push で `docs/` を Pages にデプロイ（ローカル編集を反映する用） |
 | `run.sh` | fetch → build → build_trend → commit → push（旧launchd用。現在は不使用のバックアップ経路） |
 | `docs/assets/dcl_logo.png` / `dcl_mark.png` | ヘッダーロゴ / ファビコン（ランキングサイトと共通） |
-| `~/Library/LaunchAgents/com.sukeakiito.pococha-borders.plist` | 毎朝10:00トリガー |
+| `~/Library/LaunchAgents/com.sukeakiito.pococha-borders.plist` | 旧・毎朝10:00トリガー（現在は停止中・残置） |
 
 ### build.py の要点
 - データを `__DATA__` などのプレースホルダ置換でHTMLに埋め込む（`str.format`だとJS/CSSの `{}` を全部エスケープする羽目になるので `.replace()` 方式）
