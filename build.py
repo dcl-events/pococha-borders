@@ -267,8 +267,8 @@ TEMPLATE = r"""<!doctype html>
     }
     h+='</div>';
     calEl.innerHTML=h;
-    document.getElementById("calPrev").onclick=function(){ if(view.m===1){view.y--;view.m=12;}else{view.m--;} renderCalendar(); };
-    document.getElementById("calNext").onclick=function(){ if(view.m===12){view.y++;view.m=1;}else{view.m++;} renderCalendar(); };
+    document.getElementById("calPrev").onclick=function(e){ e.stopPropagation(); if(view.m===1){view.y--;view.m=12;}else{view.m--;} renderCalendar(); };
+    document.getElementById("calNext").onclick=function(e){ e.stopPropagation(); if(view.m===12){view.y++;view.m=1;}else{view.m++;} renderCalendar(); };
     calEl.querySelectorAll(".cal-day[data-d]").forEach(function(btn){
       btn.onclick=function(){ state.date=btn.dataset.d; updateDateLabel(); renderTable(); closeCal(); };
     });
