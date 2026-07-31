@@ -7,81 +7,96 @@
 <link rel="icon" href="../assets/dcl_mark.png">
 <link rel="apple-touch-icon" href="../assets/dcl_mark.png">
 <style>
-  :root{ --bg:#f6f7f9; --card:#fff; --border:#e3e8ef; --text:#1a1d21; --sub:#697586;
-         --accent:#5b8def; --accent-soft:#c9dcff; --accent-bg:#eaf1ff; --track:#f3f5f8; --hot:#e8544f; }
+  :root{ --bg1:#fff5fb; --bg2:#f0ecff; --card:#ffffff; --border:#f3e6f2; --text:#3a2e4d; --sub:#a596bb;
+         --pink:#ff6fae; --purple:#8f6bff; --accent:#e75c9c;
+         --soft:#ffe6f2; --soft2:#efe8ff; --hot:#ff4f97;
+         --grad:linear-gradient(90deg,#ff6fae,#8f6bff); --shadow:rgba(226,110,170,.16); }
   @media (prefers-color-scheme:dark){
-    :root{ --bg:#0f1216; --card:#161b22; --border:#2a313c; --text:#e6edf3; --sub:#9aa4b2;
-           --accent:#5b8def; --accent-soft:#2a3d5f; --accent-bg:#1b2740; --track:#1c232c; }
+    :root{ --bg1:#1b1526; --bg2:#171029; --card:#241b33; --border:#372c4a; --text:#f2ecfb; --sub:#a99ec2;
+           --pink:#ff8bbd; --purple:#a98bff; --accent:#ff8bbd;
+           --soft:#3a2740; --soft2:#2c2442; --hot:#ff8bbd;
+           --grad:linear-gradient(90deg,#ff8bbd,#a98bff); --shadow:rgba(0,0,0,.35); }
   }
   *{ box-sizing:border-box; }
-  body{ margin:0; padding:24px 14px 40px; background:var(--bg); color:var(--text);
-        font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif; }
+  body{ margin:0; padding:24px 14px 44px; color:var(--text); min-height:100vh;
+        background:linear-gradient(165deg,var(--bg1) 0%,var(--bg2) 100%); background-attachment:fixed;
+        font-family:"Hiragino Maru Gothic ProN",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif; }
   .app{ max-width:820px; margin:0 auto; }
-  .brandbar{ display:flex; justify-content:center; margin:2px 0 18px; }
+  .brandbar{ display:flex; justify-content:center; margin:2px 0 16px; }
   .brandbar img{ height:34px; width:auto; }
-  h1{ font-size:19px; margin:0 0 4px; text-align:center; }
-  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 18px; text-align:center; }
-  footer{ color:var(--sub); font-size:11.5px; margin-top:22px; text-align:center; }
-  .controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:14px; }
-  select{ font-size:13px; font-weight:600; padding:7px 10px; border-radius:10px;
-          border:1px solid var(--border); background:var(--card); color:var(--text); }
-  .tabs{ display:inline-flex; background:var(--track); border-radius:999px; padding:3px; gap:2px; }
-  .tab{ font-size:13px; font-weight:700; padding:6px 16px; border-radius:999px; cursor:pointer;
+  h1{ font-size:24px; font-weight:800; margin:0 0 6px; text-align:center; letter-spacing:.5px;
+      background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 20px; text-align:center; line-height:1.6; }
+  footer{ color:var(--sub); font-size:11.5px; margin-top:24px; text-align:center; }
+  .controls{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+  select{ font-size:13px; font-weight:700; padding:8px 12px; border-radius:14px; color:var(--text);
+          border:1.5px solid var(--border); background:var(--card); box-shadow:0 2px 8px var(--shadow); }
+  .tabs{ display:inline-flex; background:var(--soft2); border-radius:999px; padding:3px; gap:2px; }
+  .tab{ font-size:13px; font-weight:800; padding:7px 16px; border-radius:999px; cursor:pointer;
         color:var(--sub); border:none; background:transparent; }
-  .tab.active{ background:var(--accent); color:#fff; }
-  .backlink{ margin-left:auto; text-decoration:none; font-size:13px; font-weight:700;
-             padding:7px 14px; border-radius:999px; border:1px solid var(--accent); color:var(--accent);
+  .tab.active{ background:var(--grad); color:#fff; box-shadow:0 3px 10px var(--shadow); }
+  .backlink{ margin-left:auto; text-decoration:none; font-size:13px; font-weight:800;
+             padding:8px 16px; border-radius:999px; border:none; background:var(--soft); color:var(--accent);
              display:inline-flex; align-items:center; gap:3px; }
-  .backlink:hover{ background:var(--accent-bg); }
-  .card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; margin-bottom:12px; }
-  .chead{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
-  .ttl{ font-size:16px; font-weight:700; }
-  .sub{ font-size:12px; color:var(--sub); margin-top:2px; }
-  .stat{ text-align:right; }
-  .statnum{ font-size:22px; font-weight:800; color:var(--accent); }
-  .statnum small{ font-size:13px; margin-left:1px; }
-  .statlbl{ font-size:11px; color:var(--sub); }
+  .backlink:hover{ filter:brightness(.97); }
+  .card{ background:var(--card); border:1.5px solid var(--border); border-radius:24px; padding:20px;
+         margin-bottom:14px; box-shadow:0 10px 30px var(--shadow); }
+  .chead{ display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; gap:10px; }
+  .ttl{ font-size:16px; font-weight:800; }
+  .sub{ font-size:12px; color:var(--sub); margin-top:3px; }
+  .stat{ text-align:right; flex-shrink:0; }
+  .statnum{ font-size:26px; font-weight:900; line-height:1;
+            background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .statnum small{ font-size:14px; margin-left:1px; }
+  .statlbl{ font-size:11px; color:var(--sub); margin-top:3px; }
   .chartwrap{ position:relative; touch-action:pan-y; }
   svg.chart{ width:100%; height:210px; overflow:visible; display:block; cursor:pointer; }
-  .daydot{ fill:var(--accent); opacity:.30; }
-  #guide{ stroke:var(--accent); stroke-width:1; opacity:0; pointer-events:none; }
-  #hoverdot{ fill:var(--accent); stroke:var(--card); stroke-width:2; opacity:0; pointer-events:none; }
-  .tip{ position:absolute; top:4px; transform:translateX(-50%); pointer-events:none; opacity:0;
-        transition:opacity .08s; background:var(--card); border:1px solid var(--border); border-radius:10px;
-        padding:5px 10px; box-shadow:0 4px 14px rgba(0,0,0,.14); white-space:nowrap; text-align:center; }
-  .tip .tipd{ display:block; font-size:11px; color:var(--sub); }
-  .tip .tipv{ display:block; font-size:14px; font-weight:800; color:var(--accent); }
-  .tip .tipbtn{ display:block; margin-top:6px; pointer-events:auto; cursor:pointer; border:none;
-    border-radius:8px; background:var(--accent); color:#fff; font-size:11px; font-weight:700;
-    padding:5px 12px; white-space:nowrap; width:100%; }
-  .tip .tipbtn:active{ opacity:.85; }
-  .charthint{ font-size:11px; color:var(--sub); text-align:center; margin-top:10px; }
-  .line{ fill:none; stroke:var(--accent); stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round; }
-  .area{ fill:var(--accent); opacity:.07; }
-  .medline{ stroke:var(--border); stroke-width:1; stroke-dasharray:4 4; }
-  .grid{ stroke:var(--border); stroke-width:1; opacity:.5; }
-  .lbl{ fill:var(--sub); font-size:11px; }
-  .dot{ fill:var(--accent); stroke:var(--card); stroke-width:2; }
-  .dotlbl{ fill:var(--hot); font-size:12px; font-weight:700; }
-  .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .gs0{ stop-color:#ff6fae; } .gs1{ stop-color:#8f6bff; }
+  .ags0{ stop-color:#ff6fae; stop-opacity:.28; } .ags1{ stop-color:#8f6bff; stop-opacity:0; }
+  @media (prefers-color-scheme:dark){
+    .gs0{ stop-color:#ff8bbd; } .gs1{ stop-color:#a98bff; }
+    .ags0{ stop-color:#ff8bbd; stop-opacity:.24; } .ags1{ stop-color:#a98bff; stop-opacity:0; }
+  }
+  .daydot{ fill:var(--purple); opacity:.28; }
+  #guide{ stroke:var(--purple); stroke-width:1.5; stroke-dasharray:3 3; opacity:0; pointer-events:none; }
+  #hoverdot{ fill:var(--purple); stroke:var(--card); stroke-width:2.5; opacity:0; pointer-events:none; }
+  .tip{ position:absolute; top:2px; transform:translateX(-50%); pointer-events:none; opacity:0;
+        transition:opacity .1s; background:var(--card); border:1.5px solid var(--border); border-radius:16px;
+        padding:8px 12px; box-shadow:0 8px 22px var(--shadow); white-space:nowrap; text-align:center; }
+  .tip .tipd{ display:block; font-size:11px; color:var(--sub); font-weight:700; }
+  .tip .tipv{ display:block; font-size:16px; font-weight:900; margin-top:1px;
+              background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .tip .tipbtn{ display:block; margin-top:8px; pointer-events:auto; cursor:pointer; border:none;
+    border-radius:999px; background:var(--grad); color:#fff; font-size:11px; font-weight:800;
+    padding:7px 14px; white-space:nowrap; width:100%; box-shadow:0 3px 10px var(--shadow); }
+  .tip .tipbtn:active{ transform:scale(.97); }
+  .charthint{ font-size:11px; color:var(--sub); text-align:center; margin-top:12px; }
+  .line{ fill:none; stroke:url(#lineGrad); stroke-width:3.2; stroke-linejoin:round; stroke-linecap:round; }
+  .area{ fill:url(#areaGrad); }
+  .medline{ stroke:var(--border); stroke-width:1.5; stroke-dasharray:4 4; }
+  .lbl{ fill:var(--sub); font-size:11px; font-weight:600; }
+  .dot{ fill:var(--pink); stroke:var(--card); stroke-width:2.5; }
+  .dotlbl{ fill:var(--hot); font-size:12.5px; font-weight:800; }
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   @media(max-width:600px){ .row{ grid-template-columns:1fr; } }
-  .minihd{ font-size:13px; font-weight:700; margin-bottom:14px; }
+  .minihd{ font-size:14px; font-weight:800; margin-bottom:16px; }
   .rangebar{ display:flex; align-items:center; gap:8px; }
-  .rmin,.rmax{ font-size:12px; font-weight:700; color:var(--sub); white-space:nowrap; }
-  .track{ position:relative; flex:1; height:10px; background:var(--track); border-radius:6px; }
-  .band{ position:absolute; top:0; bottom:0; background:var(--accent-soft); border-radius:6px; }
-  .med{ position:absolute; top:-3px; width:3px; height:16px; background:var(--accent); border-radius:2px; }
-  .rlabels{ display:flex; justify-content:space-between; font-size:10.5px; color:var(--sub); margin-top:7px; }
-  .rlabels b{ color:var(--accent); }
-  .note{ font-size:12px; color:var(--sub); margin-top:12px; line-height:1.55; }
-  .note b{ color:var(--accent); }
+  .rmin,.rmax{ font-size:12px; font-weight:800; color:var(--sub); white-space:nowrap; }
+  .track{ position:relative; flex:1; height:12px; background:var(--soft2); border-radius:999px; }
+  .band{ position:absolute; top:0; bottom:0; background:var(--grad); border-radius:999px; opacity:.55; }
+  .med{ position:absolute; top:-3px; width:4px; height:18px; background:var(--purple); border-radius:999px;
+        box-shadow:0 0 0 3px var(--card); }
+  .rlabels{ display:flex; justify-content:space-between; font-size:10.5px; color:var(--sub); margin-top:9px; }
+  .rlabels b{ color:var(--accent); font-weight:800; }
+  .note{ font-size:12px; color:var(--sub); margin-top:14px; line-height:1.6; }
+  .note b{ color:var(--accent); font-weight:800; }
   .bars{ display:flex; align-items:flex-end; gap:7px; height:130px; }
   .bar{ flex:1; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; }
-  .bar em{ font-size:10px; font-style:normal; font-weight:700; color:var(--sub); margin-bottom:4px; white-space:nowrap; }
+  .bar em{ font-size:10px; font-style:normal; font-weight:800; color:var(--sub); margin-bottom:5px; white-space:nowrap; }
   .bar.hot em{ color:var(--accent); }
-  .bar i{ width:100%; background:var(--accent-soft); border-radius:5px 5px 0 0; }
-  .bar.hot i{ background:var(--accent); }
-  .bar b{ font-size:11px; font-weight:600; color:var(--sub); margin-top:5px; }
+  .bar i{ width:100%; background:var(--soft); border-radius:8px 8px 0 0; }
+  .bar.hot i{ background:var(--grad); }
+  .bar b{ font-size:11px; font-weight:700; color:var(--sub); margin-top:6px; }
   .foot{ font-size:11px; color:var(--sub); text-align:center; margin-top:6px; }
 </style>
 </head>
@@ -93,8 +108,8 @@
       <img src="../assets/dcl_logo.png" alt="DeNA Creator Links">
     </picture>
   </div>
-  <h1>Pococha ボーダー推移</h1>
-  <p class="lead">過去のボーダー実績から「相場」を読む早見表（個人データは使いません）。最終更新：2026/07/31 12:17</p>
+  <h1>ボーダー推移カレンダー</h1>
+  <p class="lead">ランクごとのボーダー、いま何万くらい？✨<br>過去の実績から“いまの相場感”をチェックしよう（最終更新：2026/07/31 12:17）</p>
 
   <div class="controls">
     <select id="rank"></select>
@@ -116,12 +131,12 @@
         <button class="tipbtn" id="tipBtn" type="button">早見表で見る →</button>
       </div>
     </div>
-    <div class="charthint">日付をなぞって数値を確認 ／「早見表で見る →」でその日の早見表へ</div>
+    <div class="charthint">気になる日をタップして数字をチェック✨ ／「早見表で見る →」でその日へ</div>
   </div>
 
   <div class="row">
     <div class="card">
-      <div class="minihd">予測レンジ</div>
+      <div class="minihd">🎯 予測レンジ</div>
       <div class="rangebar">
         <div class="rmin" id="rmin"></div>
         <div class="track"><i class="band" id="band"></i><i class="med" id="medMark"></i></div>
@@ -131,12 +146,12 @@
       <div class="note" id="rangeNote"></div>
     </div>
     <div class="card">
-      <div class="minihd">曜日別 平均</div>
+      <div class="minihd">📅 曜日別 平均</div>
       <div class="bars" id="wbars"></div>
       <div class="note" id="wNote"></div>
     </div>
   </div>
-  <footer>DeNA Creator Links — Pocochaボーダー推移／毎日10:00 自動更新</footer>
+  <footer>DeNA Creator Links ✨ Pocochaボーダー推移／毎朝10:00 更新</footer>
 </div>
 
 <script>
@@ -173,7 +188,7 @@ function render(){
   const vals = recent.map(p=>p.v);
   const med = median(vals), mn = Math.min(...vals), mx = Math.max(...vals);
 
-  document.getElementById("chartTtl").textContent = `${state.rank}  ${TIER_LABEL[state.tier]} ボーダー 推移`;
+  document.getElementById("chartTtl").textContent = `📈 ${state.rank} ${TIER_LABEL[state.tier]} の推移`;
   document.getElementById("chartSub").textContent = `締め${state.ct}時 ／ 直近${last14.length}日（${TIER_DESC[state.tier]}）`;
   document.getElementById("medBig").innerHTML = fmtMan(med).replace("万","<small>万</small>");
 
@@ -234,6 +249,14 @@ function drawChart(pts, med){
     ? `<text class="lbl" x="${x(i)}" y="${H-8}" text-anchor="${i===0?'start':i===pts.length-1?'end':'middle'}">${p.d}</text>`:"").join("");
   const daydots = pts.map((p,i)=>`<circle class="daydot" cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="2.6"/>`).join("");
   const svg = `
+    <defs>
+      <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop class="gs0" offset="0"/><stop class="gs1" offset="1"/>
+      </linearGradient>
+      <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop class="ags0" offset="0"/><stop class="ags1" offset="1"/>
+      </linearGradient>
+    </defs>
     <polyline class="area" points="${area}"/>
     <line class="medline" x1="${padL}" y1="${ymed.toFixed(1)}" x2="${W-padR}" y2="${ymed.toFixed(1)}"/>
     <text class="lbl" x="${padL+4}" y="${(ymed-5).toFixed(1)}">中央値 ${fmtMan(med)}</text>

@@ -8,95 +8,102 @@
 <title>Pococha ランクボーダー早見表</title>
 <style>
   :root {
-    --bg:#f6f7f9; --card:#fff; --fg:#1a1d21; --sub:#697586;
-    --line:#e3e8ef; --accent:#5b8def; --accent-bg:#eaf1ff; --zebra:#fafbfc;
-    --th:#f3f5f8;
+    --bg1:#fff5fb; --bg2:#f0ecff; --card:#ffffff; --fg:#3a2e4d; --sub:#a596bb;
+    --line:#f3e6f2; --accent:#e75c9c; --pink:#ff6fae; --purple:#8f6bff;
+    --soft:#ffe6f2; --soft2:#efe8ff; --accent-bg:#ffe6f2; --zebra:#fdf3f9; --th:#faf0f7;
+    --grad:linear-gradient(90deg,#ff6fae,#8f6bff); --shadow:rgba(226,110,170,.16);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg:#0f1216; --card:#161b22; --fg:#e6edf3; --sub:#9aa4b2;
-      --line:#2a313c; --accent:#5b8def; --accent-bg:#1b2740; --zebra:#1a2028;
-      --th:#1c232c;
+      --bg1:#1b1526; --bg2:#171029; --card:#241b33; --fg:#f2ecfb; --sub:#a99ec2;
+      --line:#372c4a; --accent:#ff8bbd; --pink:#ff8bbd; --purple:#a98bff;
+      --soft:#3a2740; --soft2:#2c2442; --accent-bg:#3a2740; --zebra:#201830; --th:#241b33;
+      --grad:linear-gradient(90deg,#ff8bbd,#a98bff); --shadow:rgba(0,0,0,.35);
     }
   }
   * { box-sizing:border-box; }
   body {
-    margin:0; background:var(--bg); color:var(--fg);
-    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    margin:0; color:var(--fg); min-height:100vh;
+    background:linear-gradient(165deg,var(--bg1) 0%,var(--bg2) 100%); background-attachment:fixed;
+    font-family:"Hiragino Maru Gothic ProN",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
     line-height:1.5; padding:24px 14px 60px;
   }
   .wrap { max-width:760px; margin:0 auto; }
-  .brandbar { display:flex; justify-content:center; margin:2px 0 18px; }
+  .brandbar { display:flex; justify-content:center; margin:2px 0 16px; }
   .brandbar img { height:34px; width:auto; }
-  h1 { font-size:20px; margin:0 0 4px; text-align:center; }
-  .meta { color:var(--sub); font-size:12.5px; margin:0 0 18px; text-align:center; }
+  h1 { font-size:24px; font-weight:800; margin:0 0 6px; text-align:center; letter-spacing:.5px;
+       background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .meta { color:var(--sub); font-size:12.5px; margin:0 0 20px; text-align:center; }
 
   /* 日付セレクタ */
-  .datebar { position:relative; margin-bottom:14px; }
+  .datebar { position:relative; margin-bottom:16px; }
   .datebtn {
     display:inline-flex; align-items:center; gap:8px;
-    border:1px solid var(--line); background:var(--card); color:var(--fg);
-    padding:9px 14px; border-radius:12px; font-size:15px; font-weight:700;
-    cursor:pointer;
+    border:1.5px solid var(--line); background:var(--card); color:var(--fg);
+    padding:10px 16px; border-radius:16px; font-size:15px; font-weight:800;
+    cursor:pointer; box-shadow:0 4px 14px var(--shadow);
   }
-  .datebtn:hover { border-color:var(--accent); }
+  .datebtn:hover { border-color:var(--pink); }
   .datebtn .ico { font-size:15px; }
-  .datebtn .chev { color:var(--sub); font-size:11px; transition:transform .15s; }
+  .datebtn .chev { color:var(--accent); font-size:11px; transition:transform .15s; }
   .datebtn.open .chev { transform:rotate(180deg); }
 
   .calendar {
     position:absolute; z-index:20; top:calc(100% + 6px); left:0;
     width:300px; max-width:calc(100vw - 28px);
-    background:var(--card); border:1px solid var(--line); border-radius:14px;
-    box-shadow:0 10px 30px rgba(0,0,0,.14); padding:12px;
+    background:var(--card); border:1.5px solid var(--line); border-radius:20px;
+    box-shadow:0 14px 36px var(--shadow); padding:14px;
   }
   .calendar[hidden] { display:none; }
   .cal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
-  .cal-title { font-weight:700; font-size:14px; }
+  .cal-title { font-weight:800; font-size:14px; }
   .cal-nav {
-    border:1px solid var(--line); background:var(--card); color:var(--fg);
-    width:30px; height:30px; border-radius:8px; cursor:pointer; font-size:14px;
+    border:1.5px solid var(--line); background:var(--card); color:var(--accent);
+    width:32px; height:32px; border-radius:10px; cursor:pointer; font-size:14px;
   }
   .cal-nav:disabled { opacity:.35; cursor:default; }
   .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
   .cal-wd { text-align:center; font-size:11px; color:var(--sub); padding:4px 0; }
   .cal-day {
     position:relative; aspect-ratio:1/1; border:none; background:transparent;
-    color:var(--fg); border-radius:8px; font-size:13px; cursor:pointer;
+    color:var(--fg); border-radius:10px; font-size:13px; cursor:pointer; font-weight:700;
   }
-  .cal-day:hover:not(:disabled) { background:var(--accent-bg); }
-  .cal-day.sel { background:var(--accent); color:#fff; font-weight:700; }
+  .cal-day:hover:not(:disabled) { background:var(--soft); }
+  .cal-day.sel { background:var(--grad); color:#fff; font-weight:800; }
   .cal-day:disabled { color:var(--sub); opacity:.3; cursor:default; }
   .cal-day .dot {
     position:absolute; bottom:5px; left:50%; transform:translateX(-50%);
-    width:4px; height:4px; border-radius:50%; background:var(--accent);
+    width:4px; height:4px; border-radius:50%; background:var(--purple);
   }
   .cal-day.sel .dot { background:#fff; }
   .cal-empty { background:transparent; }
 
-  .tabs { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+  .tabs { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
   .tab {
-    border:1px solid var(--line); background:var(--card); color:var(--fg);
-    padding:8px 16px; border-radius:999px; font-size:14px; cursor:pointer; font-weight:600;
+    border:1.5px solid var(--line); background:var(--card); color:var(--sub);
+    padding:9px 18px; border-radius:999px; font-size:14px; cursor:pointer; font-weight:800;
+    box-shadow:0 2px 8px var(--shadow);
   }
-  .tab.active { background:var(--accent-bg); border-color:var(--accent); color:var(--accent); }
+  .tab.active { background:var(--grad); border-color:transparent; color:#fff; box-shadow:0 4px 12px var(--shadow); }
   a.tab.trend { margin-left:auto; text-decoration:none; color:var(--accent);
-    border-color:var(--accent); display:inline-flex; align-items:center; gap:2px; }
-  a.tab.trend:hover { background:var(--accent-bg); }
+    background:var(--soft); border:none; display:inline-flex; align-items:center; gap:3px; }
+  a.tab.trend:hover { filter:brightness(.97); }
 
-  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 12px; }
+  .card { background:var(--card); border:1.5px solid var(--line); border-radius:24px;
+          padding:8px 14px; box-shadow:0 10px 30px var(--shadow); }
   table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
-  th,td { padding:7px 8px; text-align:right; font-size:13.5px; border-bottom:1px solid var(--line); }
-  thead th { background:var(--th); color:var(--sub); font-weight:600; }
+  th,td { padding:9px 8px; text-align:right; font-size:13.5px; border-bottom:1px solid var(--line); }
+  thead th { color:var(--sub); font-weight:800; font-size:13px; }
+  thead th:not(.rk) { color:var(--accent); }
   th.rk { text-align:left; }
   td { white-space:nowrap; }
-  tbody th.rk { font-weight:700; }
-  tbody tr:nth-child(even) { background:var(--zebra); }
-  tbody tr.rrow { cursor:pointer; }
-  tbody tr.rrow:hover { background:var(--accent-bg); }
-  .rchev { color:var(--accent); font-weight:700; opacity:.55; }
+  tbody th.rk { font-weight:800; }
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom:none; }
+  tbody tr.rrow { cursor:pointer; border-radius:12px; }
+  tbody tr.rrow:hover { background:var(--soft); }
+  .rchev { color:var(--pink); font-weight:800; opacity:.6; }
   .empty { color:var(--sub); padding:28px 20px; text-align:center; }
-  footer { color:var(--sub); font-size:11.5px; margin-top:20px; text-align:center; }
+  footer { color:var(--sub); font-size:11.5px; margin-top:22px; text-align:center; }
 </style>
 </head>
 <body>
@@ -125,7 +132,7 @@
     </div>
 
     <div class="card"><div id="tableHost"></div></div>
-    <footer>DeNA Creator Links — Pococha Rank Boarder／毎日10:00 自動更新</footer>
+    <footer>DeNA Creator Links ✨ Pocochaランクボーダー早見表／毎朝10:00 更新</footer>
   </div>
 
 <script>
