@@ -12,7 +12,8 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 HISTORY = HERE / "data" / "history.json"
-OUT = HERE / "docs" / "trend.html"
+# クリーンURL用にサブディレクトリの index.html として出力 → /pococha-borders/trend/
+OUT = HERE / "docs" / "trend" / "index.html"
 
 TIERS = [("top", "+2"), ("upper", "+1"), ("normal", "±0")]
 FIELD = {"top": "borderTop", "upper": "borderUpper", "normal": "borderNormal"}
@@ -122,8 +123,8 @@ HTML = """<!doctype html>
 <div class="app">
   <div class="brandbar">
     <picture>
-      <source srcset="assets/dcl_logo_dark.png" media="(prefers-color-scheme: dark)">
-      <img src="assets/dcl_logo.png" alt="DeNA Creator Links">
+      <source srcset="../assets/dcl_logo_dark.png" media="(prefers-color-scheme: dark)">
+      <img src="../assets/dcl_logo.png" alt="DeNA Creator Links">
     </picture>
   </div>
   <h1>Pococha ボーダー推移</h1>
@@ -286,6 +287,7 @@ def main():
             .replace("__RANKS__", json.dumps(ranks, ensure_ascii=False))
             .replace("__CTS__", json.dumps(cts, ensure_ascii=False))
             .replace("__UPDATED__", updated or "-"))
+    OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(html, encoding="utf-8")
     print(f"wrote {OUT}  ({len(html)//1024} KB)")
 
