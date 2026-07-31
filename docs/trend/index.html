@@ -51,6 +51,10 @@
         padding:5px 10px; box-shadow:0 4px 14px rgba(0,0,0,.14); white-space:nowrap; text-align:center; }
   .tip .tipd{ display:block; font-size:11px; color:var(--sub); }
   .tip .tipv{ display:block; font-size:14px; font-weight:800; color:var(--accent); }
+  .tip .tipbtn{ display:block; margin-top:6px; pointer-events:auto; cursor:pointer; border:none;
+    border-radius:8px; background:var(--accent); color:#fff; font-size:11px; font-weight:700;
+    padding:5px 12px; white-space:nowrap; width:100%; }
+  .tip .tipbtn:active{ opacity:.85; }
   .charthint{ font-size:11px; color:var(--sub); text-align:center; margin-top:10px; }
   .line{ fill:none; stroke:var(--accent); stroke-width:2.5; stroke-linejoin:round; stroke-linecap:round; }
   .area{ fill:var(--accent); opacity:.07; }
@@ -107,9 +111,12 @@
     <div class="chartwrap">
       <svg class="chart" id="chart" viewBox="0 0 720 210" preserveAspectRatio="none" role="img"
            aria-label="日別ボーダー推移。なぞると数値、タップで早見表の該当日へ"></svg>
-      <div class="tip" id="tip" aria-hidden="true"></div>
+      <div class="tip" id="tip" aria-hidden="true">
+        <span class="tipd"></span><span class="tipv"></span>
+        <button class="tipbtn" id="tipBtn" type="button">早見表で見る →</button>
+      </div>
     </div>
-    <div class="charthint">日付をなぞると数値を表示 ／ タップで早見表のその日へ移動</div>
+    <div class="charthint">日付をなぞって数値を確認 ／「早見表で見る →」でその日の早見表へ</div>
   </div>
 
   <div class="row">
@@ -262,18 +269,21 @@ function nearest(e){
   chartState.pts.forEach((p,i)=>{ const d=Math.abs(p.x-cx); if(d<bd){ bd=d; bi=i; } });
   return { p: chartState.pts[bi], rect };
 }
+let selIso = null;
 function showTip(e){
   const n = nearest(e); if(!n) return;
   const { p, rect } = n;
   const g=document.getElementById("guide"), hd=document.getElementById("hoverdot");
   if(g){ g.setAttribute("x1",p.x); g.setAttribute("x2",p.x); g.style.opacity=1; }
   if(hd){ hd.setAttribute("cx",p.x); hd.setAttribute("cy",p.y); hd.style.opacity=1; }
-  const half=44;
+  const half=60;
   let leftPx = (p.x/720)*rect.width;
   leftPx = Math.max(half, Math.min(rect.width-half, leftPx));
   tip.style.left = leftPx+"px";
   const wd = WDJP[new Date(p.iso).getDay()];
-  tip.innerHTML = `<span class="tipd">${p.d}（${wd}）</span><span class="tipv">${fmtMan(p.v)}</span>`;
+  tip.querySelector(".tipd").textContent = p.d + "（" + wd + "）";
+  tip.querySelector(".tipv").textContent = fmtMan(p.v);
+  selIso = p.iso;
   tip.style.opacity=1;
 }
 function hideTip(){
@@ -281,14 +291,18 @@ function hideTip(){
   const g=document.getElementById("guide"), hd=document.getElementById("hoverdot");
   if(g) g.style.opacity=0; if(hd) hd.style.opacity=0;
 }
-function jump(e){
-  const n = nearest(e); if(!n) return;
-  location.href = "../?date=" + n.p.iso + "&ct=" + state.ct;   // 早見表(index.html)の該当日へ
-}
+// 小窓の「早見表で見る」ボタンだけがジャンプ。チャートのタップ／ホバーは数値表示のみ＝誤爆なし。
+document.getElementById("tipBtn").addEventListener("click", function(ev){
+  ev.stopPropagation();
+  if(selIso) location.href = "../?date=" + selIso + "&ct=" + state.ct;
+});
 chartEl.addEventListener("pointermove", showTip);
 chartEl.addEventListener("pointerdown", showTip);
-chartEl.addEventListener("pointerleave", hideTip);
-chartEl.addEventListener("click", jump);
+// 自動では消さない（PCで小窓のボタンへマウスを運ぶ途中で消えるのを防ぐ／スマホでも保持）。
+// チャート外をタップ／クリックしたら閉じる。
+document.addEventListener("pointerdown", function(e){
+  if(!e.target.closest(".chartwrap")) hideTip();
+});
 
 // ----- URL 深リンク（早見表から ?rank=S3&ct=22 で着地） -----
 (function(){
