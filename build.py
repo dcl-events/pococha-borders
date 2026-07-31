@@ -163,6 +163,9 @@ TEMPLATE = r"""<!doctype html>
     padding:8px 16px; border-radius:999px; font-size:14px; cursor:pointer; font-weight:600;
   }
   .tab.active { background:var(--accent-bg); border-color:var(--accent); color:var(--accent); }
+  a.tab.trend { margin-left:auto; text-decoration:none; color:var(--accent);
+    border-color:var(--accent); display:inline-flex; align-items:center; gap:2px; }
+  a.tab.trend:hover { background:var(--accent-bg); }
 
   .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 12px; }
   table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; }
@@ -172,6 +175,9 @@ TEMPLATE = r"""<!doctype html>
   td { white-space:nowrap; }
   tbody th.rk { font-weight:700; }
   tbody tr:nth-child(even) { background:var(--zebra); }
+  tbody tr.rrow { cursor:pointer; }
+  tbody tr.rrow:hover { background:var(--accent-bg); }
+  .rchev { color:var(--accent); font-weight:700; opacity:.55; }
   .empty { color:var(--sub); padding:28px 20px; text-align:center; }
   footer { color:var(--sub); font-size:11.5px; margin-top:20px; text-align:center; }
 </style>
@@ -198,6 +204,7 @@ TEMPLATE = r"""<!doctype html>
       <button class="tab active" data-t="22">22時締め</button>
       <button class="tab" data-t="24">24時締め</button>
       <button class="tab" data-t="13">13時締め</button>
+      <a id="trendLink" class="tab trend" href="trend/">📈 推移</a>
     </div>
 
     <div class="card"><div id="tableHost"></div></div>
@@ -230,12 +237,17 @@ TEMPLATE = r"""<!doctype html>
     var head = COLS.map(function(c){ return "<th>"+c[1]+"</th>"; }).join("");
     var body = rows.map(function(r){
       var tds = COLS.map(function(c){ return "<td>"+fmt(r[c[0]])+"</td>"; }).join("");
-      return '<tr><th class="rk">'+r.rank+'</th>'+tds+'</tr>';
+      return '<tr class="rrow" onclick="goTrend(\''+r.rank+'\')" title="'+r.rank+' の推移を見る">'
+        + '<th class="rk">'+r.rank+' <span class="rchev">›</span></th>'+tds+'</tr>';
     }).join("");
     host.innerHTML = '<table><thead><tr><th class="rk">ランク</th>'+head+'</tr></thead><tbody>'+body+'</tbody></table>';
   }
 
   function updateDateLabel(){ document.getElementById("dateLabel").textContent = jpLabel(state.date); }
+
+  // 推移ページへの導線（現在の締め時間を引き継ぐ）
+  function updateTrendLink(){ document.getElementById("trendLink").href = "trend/?ct=" + state.time; }
+  function goTrend(rank){ location.href = "trend/?rank=" + encodeURIComponent(rank) + "&ct=" + state.time; }
 
   // ----- カレンダー -----
   var view = parse(state.date); // {y,m}
@@ -288,12 +300,13 @@ TEMPLATE = r"""<!doctype html>
     if(!calEl.hidden && !calEl.contains(e.target)) closeCal();
   });
 
-  // ----- タブ -----
-  document.querySelectorAll('.tab').forEach(function(b){
+  // ----- タブ（推移リンクの <a> は除外） -----
+  document.querySelectorAll('.tab[data-t]').forEach(function(b){
     b.addEventListener('click', function(){
       state.time=b.dataset.t;
-      document.querySelectorAll('.tab').forEach(function(x){ x.classList.toggle('active', x.dataset.t===state.time); });
+      document.querySelectorAll('.tab[data-t]').forEach(function(x){ x.classList.toggle('active', x.dataset.t===state.time); });
       renderTable();
+      updateTrendLink();
     });
   });
 
@@ -314,6 +327,7 @@ TEMPLATE = r"""<!doctype html>
   // ----- 初期描画 -----
   updateDateLabel();
   renderTable();
+  updateTrendLink();
 </script>
 </body>
 </html>

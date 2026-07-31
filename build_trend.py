@@ -338,6 +338,17 @@ chartEl.addEventListener("pointerdown", showTip);
 chartEl.addEventListener("pointerleave", hideTip);
 chartEl.addEventListener("click", jump);
 
+// ----- URL 深リンク（早見表から ?rank=S3&ct=22 で着地） -----
+(function(){
+  try{
+    const sp = new URLSearchParams(location.search);
+    const r = sp.get("rank");            if(r && RANKS.includes(r)) state.rank=r;
+    const c = sp.get("ct")||sp.get("time"); if(c && CTS.includes(c))  state.ct=c;
+    const t = sp.get("tier");            if(["top","upper","normal"].includes(t)) state.tier=t;
+    const tl = {"+2":"top","+1":"upper","±0":"normal"}[t]; if(tl) state.tier=tl;
+  }catch(e){}
+})();
+
 render();
 </script>
 </body>
