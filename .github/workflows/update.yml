@@ -2,7 +2,8 @@ name: Daily update & deploy
 
 on:
   schedule:
-    - cron: '0 1 * * *'      # 01:00 UTC = 10:00 JST（毎日・PC不要でクラウド実行）
+    # 毎時0分は混雑で遅延/スキップされやすいため、オフピークの分に設定
+    - cron: '27 1 * * *'     # 01:27 UTC = 10:27 JST（毎日・PC不要でクラウド実行）
   workflow_dispatch:          # 画面から手動実行も可能
 
 permissions:
