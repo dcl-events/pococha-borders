@@ -1,13 +1,13 @@
 name: Daily update & deploy
 
 on:
+  # ★本命：外部スケジューラ(cron-job.org等)が毎朝10:00 JST丁度にこれを叩く＝時刻が正確
+  #   POST /repos/dcl-events/pococha-borders/dispatches  {"event_type":"daily-update"}
+  repository_dispatch:
+    types: [daily-update]
+  # 保険：GitHub純正スケジュール（遅延しがちだが、外部トリガーが落ちた日でも必ず1回は更新される）
   schedule:
-    # GitHub のスケジュールは混雑で数時間遅延/スキップされることがある。
-    # 朝の枠を複数用意し「どれか1つでも定刻近くに当たる」ようにする。
-    # 処理は変化がある時だけcommitする冪等設計なので、何度走っても二重更新にはならない。
-    - cron: '27 1 * * *'     # 01:27 UTC = 10:27 JST（本命）
-    - cron: '52 1 * * *'     # 01:52 UTC = 10:52 JST
-    - cron: '17 2 * * *'     # 02:17 UTC = 11:17 JST
+    - cron: '27 1 * * *'     # 01:27 UTC = 10:27 JST
     - cron: '27 3 * * *'     # 03:27 UTC = 12:27 JST（遅延時の保険）
   workflow_dispatch:          # 画面から手動実行も可能
 
