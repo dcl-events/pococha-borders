@@ -57,8 +57,11 @@ def load_history():
     return {"closingTimes": {}, "updatedAt": None}
 
 
+JST = datetime.timezone(datetime.timedelta(hours=9))  # クラウド(UTC)実行でも時刻はJSTで統一
+
+
 def main():
-    today = datetime.date.today()
+    today = datetime.datetime.now(JST).date()   # 「今日」もJST基準（UTC実行の日付ズレ防止）
     hist = load_history()
     ct = hist.setdefault("closingTimes", {})
 
@@ -77,7 +80,8 @@ def main():
             slot["latestDate"] = ds
         print(f"[{t}時] {ds} : {len(rows)}件 取得")
 
-    hist["updatedAt"] = datetime.datetime.now().isoformat(timespec="seconds")
+    # JSTの壁掛け時計時刻で記録（オフセットは付けない＝表示側はそのままJSTとして出す）
+    hist["updatedAt"] = datetime.datetime.now(JST).replace(tzinfo=None).isoformat(timespec="seconds")
     HISTORY.write_text(
         json.dumps(hist, ensure_ascii=False, indent=2), encoding="utf-8"
     )

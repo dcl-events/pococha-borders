@@ -38,7 +38,7 @@ def main():
     ct = hist.get("closingTimes", {})
     updated = hist.get("updatedAt") or ""
     try:
-        updated_disp = datetime.datetime.fromisoformat(updated).strftime("%Y/%m/%d %H:%M")
+        updated_disp = datetime.datetime.fromisoformat(updated).strftime("%Y/%m/%d %H:%M") + " JST"
     except Exception:
         updated_disp = updated
 

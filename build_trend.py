@@ -46,7 +46,7 @@ def build_series():
     updated = raw.get("updatedAt", "")
     try:
         import datetime
-        updated = datetime.datetime.fromisoformat(updated).strftime("%Y/%m/%d %H:%M")
+        updated = datetime.datetime.fromisoformat(updated).strftime("%Y/%m/%d %H:%M") + " JST"
     except Exception:
         pass
     return out, ranks, cts, updated
