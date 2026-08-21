@@ -4,7 +4,8 @@
 data/history.json から「ボーダー推移ダッシュボード」docs/trend.html を生成する。
 - タブ: +2(borderTop) / +1(borderUpper) / ±0(borderNormal)
 - 選択: ランク / 締め時間(22/24/13)
-- 表示: 推移折れ線 + 中央値ライン / 予測レンジ(最小・中央値・最大) / 曜日別平均
+- 表示: 推移折れ線 + 中央値ライン / あすの予測レンジ(点予測+校正区間) / 曜日別平均
+- 予測は data/prediction.json（borders_predict.py --export-json 出力）を読む。無ければ実績レンジにフォールバック。
 個人データは一切使わない「誰が見ても」版。
 """
 import json
@@ -12,6 +13,8 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 HISTORY = HERE / "data" / "history.json"
+# ope公式APIベースの翌日予測グリッド（borders_predict.py --export-json が生成・別途コミット）
+PREDICTION = HERE / "data" / "prediction.json"
 # クリーンURL用にサブディレクトリの index.html として出力 → /pococha-borders/trend/
 OUT = HERE / "docs" / "trend" / "index.html"
 
@@ -142,6 +145,10 @@ HTML = """<!doctype html>
         box-shadow:0 0 0 3px var(--card); }
   .rlabels{ display:flex; justify-content:space-between; font-size:10.5px; color:var(--sub); margin-top:9px; }
   .rlabels b{ color:var(--accent); font-weight:800; }
+  .predbig{ font-size:30px; font-weight:900; color:var(--accent); line-height:1; margin:-4px 0 16px; letter-spacing:-.5px; }
+  .predbig small{ font-size:15px; font-weight:800; }
+  .whenbadge{ display:inline-block; font-size:11px; font-weight:800; color:var(--sub);
+              background:var(--soft2); border-radius:999px; padding:2px 9px; margin-left:6px; vertical-align:middle; }
   .note{ font-size:12px; color:var(--sub); margin-top:14px; line-height:1.6; }
   .note b{ color:var(--accent); font-weight:800; }
   .bars{ display:flex; align-items:flex-end; gap:7px; height:130px; }
@@ -189,14 +196,15 @@ HTML = """<!doctype html>
   </div>
 
   <div class="row">
-    <div class="card">
-      <div class="minihd">🎯 予測レンジ</div>
+    <div class="card" id="predCard">
+      <div class="minihd">🎯 <span id="predRel">本日</span>の予測レンジ <span class="whenbadge" id="predWhen"></span></div>
+      <div class="predbig" id="predVal">-</div>
       <div class="rangebar">
         <div class="rmin" id="rmin"></div>
         <div class="track"><i class="band" id="band"></i><i class="med" id="medMark"></i></div>
         <div class="rmax" id="rmax"></div>
       </div>
-      <div class="rlabels"><span>最小</span><span>中央値 <b id="rmed"></b></span><span>最大</span></div>
+      <div class="rlabels"><span>低 <b id="rlo"></b></span><span>予測 <b id="rmed"></b></span><span>高 <b id="rhi"></b></span></div>
       <div class="note" id="rangeNote"></div>
     </div>
     <div class="card">
@@ -210,6 +218,7 @@ HTML = """<!doctype html>
 
 <script>
 const DATA = __DATA__;
+const PRED = __PRED__;
 const RANKS = __RANKS__;
 const CTS = __CTS__;
 const TIER_LABEL = {top:"+2", upper:"+1", normal:"±0"};
@@ -248,18 +257,58 @@ function render(){
 
   drawChart(last14, med);
 
-  // range
-  const pct = v => ((v-mn)/(mx-mn||1))*100;
-  document.getElementById("rmin").textContent = fmtMan(mn);
-  document.getElementById("rmax").textContent = fmtMan(mx);
-  document.getElementById("rmed").textContent = fmtMan(med);
-  const q1 = median(vals.filter(v=>v<=med)), q3 = median(vals.filter(v=>v>=med));
-  const band = document.getElementById("band");
-  band.style.left = pct(q1)+"%"; band.style.right = (100-pct(q3))+"%";
-  document.getElementById("medMark").style.left = pct(med)+"%";
-  document.getElementById("rangeNote").innerHTML =
-    `直近${vals.length}日の実績は <b>${fmtMan(mn)}〜${fmtMan(mx)}</b>。<br>` +
-    `半分の日は <b>${fmtMan(q1)}〜${fmtMan(q3)}</b> に収まる。`;
+  // ===== あすの予測レンジ（過去の散らばりではなく、翌日の点予測＋校正区間）=====
+  const pk  = PRED && PRED.byCt && PRED.byCt[state.ct];
+  const pr  = pk && pk[state.rank] && pk[state.rank][state.tier];
+  const gen = PRED && PRED.generatedFor && PRED.generatedFor[state.ct];
+  const predCard = document.getElementById("predCard");
+  if(pr){
+    if(predCard) predCard.style.display = "";
+    const lo=pr.p10, hi=pr.p90, q1=pr.p25, q3=pr.p75, pv=pr.predict;
+    const pct = v => ((v-lo)/((hi-lo)||1))*100;
+    document.getElementById("predVal").innerHTML = fmtMan(pv).replace("万","<small>万</small>");
+    document.getElementById("rmin").textContent = fmtMan(lo);
+    document.getElementById("rmax").textContent = fmtMan(hi);
+    document.getElementById("rlo").textContent  = fmtMan(q1);
+    document.getElementById("rmed").textContent = fmtMan(pv);
+    document.getElementById("rhi").textContent  = fmtMan(q3);
+    const band = document.getElementById("band");
+    band.style.left = pct(q1)+"%"; band.style.right = (100-pct(q3))+"%";
+    document.getElementById("medMark").style.left = pct(pv)+"%";
+    let whenTxt = "";
+    if(gen){
+      const md = gen.target.slice(5).replace("-","/");
+      const wd = WDJP[new Date(gen.target).getDay()];
+      whenTxt = md+"（"+wd+"）";
+      document.getElementById("predRel").textContent = gen.rel || "翌日";
+    }
+    document.getElementById("predWhen").textContent = whenTxt;
+    const shaky = pr.lowconf || (pr.mdape!=null && pr.mdape>=12);
+    const hz = (gen && gen.horizon>=2) ? `・${gen.horizon}日先` : "";
+    document.getElementById("rangeNote").innerHTML =
+      `${state.rank} ${TIER_LABEL[state.tier]} の予測は <b>${fmtMan(pv)}</b>。<br>`+
+      `半分の日は <b>${fmtMan(q1)}〜${fmtMan(q3)}</b>、8割の日は ${fmtMan(lo)}〜${fmtMan(hi)} に収まる見込み。`+
+      (pr.mdape!=null ? `<br><span style="opacity:.75">実績誤差 中央${pr.mdape}%${hz}`+(shaky?"／この段は振れ大・参考値":"")+`</span>` : "");
+  } else {
+    // 予測が無い段（データ未生成等）は実績レンジにフォールバック
+    if(predCard) predCard.style.display = "";
+    document.getElementById("predRel").textContent = "直近";
+    document.getElementById("predWhen").textContent = "";
+    document.getElementById("predVal").innerHTML = fmtMan(med).replace("万","<small>万</small>");
+    const pct = v => ((v-mn)/(mx-mn||1))*100;
+    const q1 = median(vals.filter(v=>v<=med)), q3 = median(vals.filter(v=>v>=med));
+    document.getElementById("rmin").textContent = fmtMan(mn);
+    document.getElementById("rmax").textContent = fmtMan(mx);
+    document.getElementById("rlo").textContent  = fmtMan(q1);
+    document.getElementById("rmed").textContent = fmtMan(med);
+    document.getElementById("rhi").textContent  = fmtMan(q3);
+    const band = document.getElementById("band");
+    band.style.left = pct(q1)+"%"; band.style.right = (100-pct(q3))+"%";
+    document.getElementById("medMark").style.left = pct(med)+"%";
+    document.getElementById("rangeNote").innerHTML =
+      `（予測データ準備中）直近${vals.length}日の実績は <b>${fmtMan(mn)}〜${fmtMan(mx)}</b>、`+
+      `半分の日は <b>${fmtMan(q1)}〜${fmtMan(q3)}</b>。`;
+  }
 
   // weekday（直近30日）
   const wsum = Array.from({length:7},()=>[]);
@@ -408,8 +457,17 @@ render();
 
 def main():
     data, ranks, cts, updated = build_series()
+    pred = {}
+    if PREDICTION.exists():
+        try:
+            pred = json.loads(PREDICTION.read_text())
+        except Exception as e:
+            print(f"  ⚠ prediction.json 読込失敗（予測なしで生成）: {e}")
+    else:
+        print("  ⚠ prediction.json が無いため実績レンジにフォールバック")
     html = (HTML
             .replace("__DATA__", json.dumps(data, ensure_ascii=False, separators=(",", ":")))
+            .replace("__PRED__", json.dumps(pred, ensure_ascii=False, separators=(",", ":")))
             .replace("__RANKS__", json.dumps(ranks, ensure_ascii=False))
             .replace("__CTS__", json.dumps(cts, ensure_ascii=False))
             .replace("__UPDATED__", updated or "-"))
