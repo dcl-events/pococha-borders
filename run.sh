@@ -9,16 +9,9 @@ echo "===== $(date '+%Y-%m-%d %H:%M:%S') 取得開始 ====="
 python3 fetch.py
 python3 build.py
 
-# ope公式APIベースの翌日予測（ローカルのみ・.token必須）。失敗しても本体更新は止めない。
-# GitHub Actions ランナーには .token/履歴が無いので、生成物 data/prediction.json をコミットして共有する。
-POCO="$HOME/Claude/pococha"
-if [[ -f "$POCO/.token" ]]; then
-  python3 "$POCO/borders_backfill.py" "$(date -v-3d +%Y%m%d)" "$(date +%Y%m%d)" || echo "⚠ ボーダー履歴の更新に失敗（予測は前回値を使用）"
-  python3 "$POCO/borders_predict.py" --export-json data/prediction.json || echo "⚠ 予測JSONの生成に失敗"
-else
-  echo "⚠ $POCO/.token が無いため予測JSONは更新せず（前回のコミット値を使用）"
-fi
-
+# 予測レンジ(data/prediction.json)はこのジョブでは触らない。
+# ope公式ベースの予測は専用ルーティン update_prediction.sh（launchd 14:00）が更新する。
+# build_trend.py は既存の data/prediction.json をそのまま埋め込む（無ければ実績レンジにフォールバック）。
 python3 build_trend.py
 
 # 変更があれば commit & push
