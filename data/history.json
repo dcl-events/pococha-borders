@@ -1,7 +1,7 @@
 {
   "closingTimes": {
     "22": {
-      "latestDate": "2026-10-18",
+      "latestDate": "2026-10-19",
       "byDate": {
         "2026-07-29": [
           {
@@ -20792,11 +20792,165 @@
             "borderNormal": 241,
             "borderLower": 237
           }
+        ],
+        "2026-10-19": [
+          {
+            "date": "2026-10-19",
+            "rank": "S6",
+            "borderTop": 3716181,
+            "borderUpper": 1917788,
+            "borderNormal": 975117,
+            "borderLower": 415188
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "S5",
+            "borderTop": 2060831,
+            "borderUpper": 1338382,
+            "borderNormal": 694499,
+            "borderLower": 682696
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "S4",
+            "borderTop": 1580144,
+            "borderUpper": 1038169,
+            "borderNormal": 512131,
+            "borderLower": 490975
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "S3",
+            "borderTop": 1343319,
+            "borderUpper": 970760,
+            "borderNormal": 412234,
+            "borderLower": 404219
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "S2",
+            "borderTop": 1117572,
+            "borderUpper": 889838,
+            "borderNormal": 411492,
+            "borderLower": 406592
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "S1",
+            "borderTop": 865530,
+            "borderUpper": 635962,
+            "borderNormal": 334389,
+            "borderLower": 330605
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "A3",
+            "borderTop": 798880,
+            "borderUpper": 595454,
+            "borderNormal": 343135,
+            "borderLower": 336583
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "A2",
+            "borderTop": 696141,
+            "borderUpper": 474602,
+            "borderNormal": 241408,
+            "borderLower": 238457
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "A1",
+            "borderTop": 554037,
+            "borderUpper": 414789,
+            "borderNormal": 244043,
+            "borderLower": 240776
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "B3",
+            "borderTop": 516943,
+            "borderUpper": 345536,
+            "borderNormal": 201308,
+            "borderLower": 200439
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "B2",
+            "borderTop": 473555,
+            "borderUpper": 342100,
+            "borderNormal": 169977,
+            "borderLower": 169601
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "B1",
+            "borderTop": 352772,
+            "borderUpper": 262255,
+            "borderNormal": 141254,
+            "borderLower": 136176
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "C3",
+            "borderTop": 267909,
+            "borderUpper": 198699,
+            "borderNormal": 89039,
+            "borderLower": 88032
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "C2",
+            "borderTop": 172692,
+            "borderUpper": 119358,
+            "borderNormal": 62262,
+            "borderLower": 58782
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "C1",
+            "borderTop": 92180,
+            "borderUpper": 61405,
+            "borderNormal": 39538,
+            "borderLower": 36698
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "D3",
+            "borderTop": 49591,
+            "borderUpper": 32015,
+            "borderNormal": 10302,
+            "borderLower": 9822
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "D2",
+            "borderTop": 24360,
+            "borderUpper": 14359,
+            "borderNormal": 5741,
+            "borderLower": 5385
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "D1",
+            "borderTop": 12945,
+            "borderUpper": 7674,
+            "borderNormal": 2115,
+            "borderLower": 2096
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "E1",
+            "borderTop": 2181,
+            "borderUpper": 1048,
+            "borderNormal": 237,
+            "borderLower": 236
+          }
         ]
       }
     },
     "24": {
-      "latestDate": "2026-10-18",
+      "latestDate": "2026-10-19",
       "byDate": {
         "2026-07-29": [
           {
@@ -41587,11 +41741,165 @@
             "borderNormal": 264,
             "borderLower": 264
           }
+        ],
+        "2026-10-19": [
+          {
+            "date": "2026-10-19",
+            "rank": "S6",
+            "borderTop": 1765570,
+            "borderUpper": 1526667,
+            "borderNormal": 866657,
+            "borderLower": 851808
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "S5",
+            "borderTop": 2019103,
+            "borderUpper": 1311282,
+            "borderNormal": 569073,
+            "borderLower": 558039
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "S4",
+            "borderTop": 1548150,
+            "borderUpper": 964140,
+            "borderNormal": 368918,
+            "borderLower": 256888
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "S3",
+            "borderTop": 1244970,
+            "borderUpper": 730273,
+            "borderNormal": 351489,
+            "borderLower": 160879
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "S2",
+            "borderTop": 1094943,
+            "borderUpper": 823408,
+            "borderNormal": 419174,
+            "borderLower": 416377
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "S1",
+            "borderTop": 873766,
+            "borderUpper": 656768,
+            "borderNormal": 362904,
+            "borderLower": 362428
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "A3",
+            "borderTop": 700865,
+            "borderUpper": 583397,
+            "borderNormal": 246930,
+            "borderLower": 142153
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "A2",
+            "borderTop": 691643,
+            "borderUpper": 476087,
+            "borderNormal": 275347,
+            "borderLower": 232074
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "A1",
+            "borderTop": 462340,
+            "borderUpper": 377154,
+            "borderNormal": 215207,
+            "borderLower": 213880
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "B3",
+            "borderTop": 506476,
+            "borderUpper": 369433,
+            "borderNormal": 182657,
+            "borderLower": 180499
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "B2",
+            "borderTop": 426096,
+            "borderUpper": 283618,
+            "borderNormal": 167237,
+            "borderLower": 146166
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "B1",
+            "borderTop": 345629,
+            "borderUpper": 252630,
+            "borderNormal": 130531,
+            "borderLower": 130029
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "C3",
+            "borderTop": 205050,
+            "borderUpper": 134769,
+            "borderNormal": 84860,
+            "borderLower": 83840
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "C2",
+            "borderTop": 161174,
+            "borderUpper": 133033,
+            "borderNormal": 61002,
+            "borderLower": 34456
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "C1",
+            "borderTop": 117154,
+            "borderUpper": 84797,
+            "borderNormal": 38737,
+            "borderLower": 37780
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "D3",
+            "borderTop": 70142,
+            "borderUpper": 44328,
+            "borderNormal": 11641,
+            "borderLower": 11351
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "D2",
+            "borderTop": 35213,
+            "borderUpper": 21490,
+            "borderNormal": 6136,
+            "borderLower": 5996
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "D1",
+            "borderTop": 15145,
+            "borderUpper": 8102,
+            "borderNormal": 2553,
+            "borderLower": 2532
+          },
+          {
+            "date": "2026-10-19",
+            "rank": "E1",
+            "borderTop": 3752,
+            "borderUpper": 1383,
+            "borderNormal": 247,
+            "borderLower": 247
+          }
         ]
       }
     },
     "13": {
-      "latestDate": "2026-10-17",
+      "latestDate": "2026-10-18",
       "byDate": {
         "2026-07-28": [
           {
@@ -62382,9 +62690,163 @@
             "borderNormal": 291,
             "borderLower": 287
           }
+        ],
+        "2026-10-18": [
+          {
+            "date": "2026-10-18",
+            "rank": "S6",
+            "borderTop": 3637391,
+            "borderUpper": 1877127,
+            "borderNormal": 605591,
+            "borderLower": 479975
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "S5",
+            "borderTop": 2017137,
+            "borderUpper": 1310006,
+            "borderNormal": 440616,
+            "borderLower": 437922
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "S4",
+            "borderTop": 1546642,
+            "borderUpper": 1016158,
+            "borderNormal": 374966,
+            "borderLower": 371421
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "S3",
+            "borderTop": 1314838,
+            "borderUpper": 950178,
+            "borderNormal": 348967,
+            "borderLower": 342659
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "S2",
+            "borderTop": 1093877,
+            "borderUpper": 505667,
+            "borderNormal": 290205,
+            "borderLower": 286716
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "S1",
+            "borderTop": 872915,
+            "borderUpper": 434225,
+            "borderNormal": 246416,
+            "borderLower": 235451
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "A3",
+            "borderTop": 781942,
+            "borderUpper": 417043,
+            "borderNormal": 283626,
+            "borderLower": 277691
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "A2",
+            "borderTop": 690970,
+            "borderUpper": 417043,
+            "borderNormal": 264351,
+            "borderLower": 262185
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "A1",
+            "borderTop": 542290,
+            "borderUpper": 368886,
+            "borderNormal": 238869,
+            "borderLower": 139686
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "B3",
+            "borderTop": 505983,
+            "borderUpper": 380448,
+            "borderNormal": 197040,
+            "borderLower": 196129
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "B2",
+            "borderTop": 463514,
+            "borderUpper": 334846,
+            "borderNormal": 167075,
+            "borderLower": 166117
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "B1",
+            "borderTop": 345292,
+            "borderUpper": 256694,
+            "borderNormal": 138259,
+            "borderLower": 78358
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "C3",
+            "borderTop": 262229,
+            "borderUpper": 168521,
+            "borderNormal": 76830,
+            "borderLower": 74953
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "C2",
+            "borderTop": 198442,
+            "borderUpper": 132903,
+            "borderNormal": 60942,
+            "borderLower": 41238
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "C1",
+            "borderTop": 134636,
+            "borderUpper": 84714,
+            "borderNormal": 38699,
+            "borderLower": 29400
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "D3",
+            "borderTop": 79539,
+            "borderUpper": 48255,
+            "borderNormal": 12569,
+            "borderLower": 11994
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "D2",
+            "borderTop": 48562,
+            "borderUpper": 22181,
+            "borderNormal": 9132,
+            "borderLower": 8405
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "D1",
+            "borderTop": 16288,
+            "borderUpper": 6355,
+            "borderNormal": 2489,
+            "borderLower": 2368
+          },
+          {
+            "date": "2026-10-18",
+            "rank": "E1",
+            "borderTop": 2216,
+            "borderUpper": 1120,
+            "borderNormal": 245,
+            "borderLower": 242
+          }
         ]
       }
     }
   },
-  "updatedAt": "2026-10-19T18:11:04"
+  "updatedAt": "2026-10-20T15:09:24"
 }
