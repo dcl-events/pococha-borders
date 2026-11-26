@@ -11,21 +11,20 @@ on:
     - cron: '27 3 * * *'     # 03:27 UTC = 12:27 JST（遅延時の保険）
   workflow_dispatch:          # 画面から手動実行も可能
 
+# Pages は「ブランチ公開（main:/docs）」に設定済み。
+# この workflow は docs を作り直して push するだけでよく、push を受けて
+# GitHub 純正の pages-build-deployment が自動配信する（artifact/deploy-pages は使わない＝競合しない）。
 permissions:
-  contents: write             # history.json / docs を自動コミットするため
-  pages: write
-  id-token: write
+  contents: write             # history.json / docs を自動コミット＆push するため
 
+# 同一 workflow の多重起動だけ直列化（古い実行はキャンセルして最新を優先）
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: borders-update
+  cancel-in-progress: true
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -40,7 +39,7 @@ jobs:
           python build.py
           python build_trend.py
 
-      - name: 変更を自動コミット
+      - name: 変更を自動コミット＆push（push で Pages が自動配信）
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -49,14 +48,10 @@ jobs:
             echo "変更なし"
           else
             git commit -m "chore: update borders (auto, cloud)"
-            git push
+            # 他の push と競合しても自動で取り込んで再push（夜間の衝突対策）
+            for i in 1 2 3; do
+              git push && break
+              echo "push 競合 → pull --rebase して再試行 ($i)"
+              git pull --rebase --autostash origin main || true
+            done
           fi
-
-      - name: Pages 用アーティファクトをアップロード
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs
-
-      - name: GitHub Pages へデプロイ
-        id: deploy
-        uses: actions/deploy-pages@v4
