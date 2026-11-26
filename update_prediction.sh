@@ -31,11 +31,27 @@ fi
 # 4) 推移ページを再生成（予測カードに反映）
 python3 build_trend.py
 
-# 5) 差分があれば commit & push（GitHub Pages が自動デプロイ）
+# 5) 差分があれば commit & push。デプロイは update.yml に一本化しているので、
+#    push しただけでは Pages に反映されない → repository_dispatch で update.yml を起動する。
 if [[ -n "$(git status --porcelain)" ]]; then
   git add -A
   git commit -q -m "chore(pred): 予測レンジ更新 $(date '+%Y-%m-%d %H:%M')"
-  if git push origin main; then echo "push 完了"; else echo "⚠ push 失敗"; exit 1; fi
+  if git push origin main; then
+    echo "push 完了"
+    # 唯一のデプロイ経路 update.yml を起動（取得→生成→デプロイを直列で1回だけ実行）
+    TOK=$(printf "protocol=https\nhost=github.com\n\n" | git credential fill 2>/dev/null | sed -n 's/^password=//p')
+    if [[ -n "$TOK" ]]; then
+      code=$(curl -s -o /dev/null -w '%{http_code}' -X POST \
+        -H "Authorization: token $TOK" -H "Accept: application/vnd.github+json" \
+        https://api.github.com/repos/dcl-events/pococha-borders/dispatches \
+        -d '{"event_type":"daily-update"}')
+      echo "update.yml 起動 (HTTP $code)"
+    else
+      echo "⚠ トークン取得不可：update.yml を手動起動してください"
+    fi
+  else
+    echo "⚠ push 失敗"; exit 1
+  fi
 else
   echo "変更なし（push スキップ）"
 fi
