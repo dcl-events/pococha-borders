@@ -40,4 +40,17 @@ if [[ -n "$(git status --porcelain)" ]]; then
 else
   echo "変更なし（push スキップ）"
 fi
+
+# 本体(UPSTAR)更新はクラウド update.yml が担当。GitHubのscheduleは不発しがちなので、
+# 毎朝このMacジョブ(10:05)から確実に起動する（PCを閉じた朝はGitHub scheduleが保険）。
+TOK=$(printf "protocol=https\nhost=github.com\n\n" | git credential fill 2>/dev/null | sed -n 's/^password=//p')
+if [[ -n "$TOK" ]]; then
+  code=$(curl -s -o /dev/null -w '%{http_code}' -X POST \
+    -H "Authorization: token $TOK" -H "Accept: application/vnd.github+json" \
+    https://api.github.com/repos/dcl-events/pococha-borders/actions/workflows/update.yml/dispatches \
+    -d '{"ref":"main"}')
+  echo "本体更新(update.yml)を起動 (HTTP $code)"
+else
+  echo "⚠ token取得不可：本体更新は未起動（GitHub scheduleの発火を待つ）"
+fi
 echo "===== 完了 ====="
